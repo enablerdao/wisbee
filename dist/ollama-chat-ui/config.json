@@ -5,7 +5,7 @@
   },
   "ollama": {
     "url": "http://localhost:11434",
-    "defaultModel": "qwen3:1.7b",
+    "defaultModel": "jaahas/qwen3-abliterated:0.6b",
     "models": [
       "jaahas/qwen3-abliterated:0.6b",
       "qwen3:1.7b",
@@ -93,8 +93,8 @@
     ]
   },
   "ui": {
-    "defaultMaxTokens": 5000,
-    "defaultTemperature": 0.8,
+    "defaultMaxTokens": 2000,
+    "defaultTemperature": 0.7,
     "theme": "dark",
     "title": "Ollama AI Chat",
     "subtitle": "Powered by Local LLMs"
