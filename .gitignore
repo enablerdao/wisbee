@@ -41,3 +41,16 @@ test_*
 tmp/
 temp/
 .tmp/
+
+# Electron/Node.js
+node_modules/
+dist/
+*.app
+out/
+build/
+
+# npm
+npm-debug.log*
+package-lock.json
+yarn.lock
+yarn-error.log*
