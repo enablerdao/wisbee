@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Config overrides (keep the default)
+config.local.json
+config.override.json
+
+# Test files
+test_*
+*.test.*
+
+# Backup files
+*.bak
+*.backup
+*_backup
+
+# Temporary files
+tmp/
+temp/
+.tmp/

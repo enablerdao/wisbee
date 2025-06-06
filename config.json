@@ -1,0 +1,51 @@
+{
+  "server": {
+    "port": 8899,
+    "host": "localhost"
+  },
+  "ollama": {
+    "url": "http://localhost:11434",
+    "defaultModel": "qwen3:latest",
+    "models": [
+      "qwen3:latest",
+      "llama3.2:1b",
+      "phi3:mini",
+      "gemma3:4b",
+      "gemma3:1b",
+      "llava:7b",
+      "jaahas/qwen3-abliterated:0.6b"
+    ]
+  },
+  "ui": {
+    "defaultMaxTokens": 2000,
+    "defaultTemperature": 0.7,
+    "theme": "dark",
+    "title": "Ollama AI Chat",
+    "subtitle": "Powered by Local LLMs"
+  },
+  "prompts": {
+    "creative": [
+      {"label": "新しい色を発明", "prompt": "新しい色を発明して、その名前と説明をしてください。"},
+      {"label": "重力が逆の世界", "prompt": "もし重力が逆だったら世界はどうなる？"},
+      {"label": "AIの感情", "prompt": "AIとして感じる「寂しさ」を詩で表現してください。"}
+    ],
+    "logic": [
+      {"label": "論理パズル", "prompt": "もし全ての猫が動物で、全ての動物が生き物なら、全ての猫は何ですか？"},
+      {"label": "ケーキの問題", "prompt": "3人が3個のケーキを3分で食べます。9人が9個のケーキを食べるのに何分かかりますか？"}
+    ],
+    "math": [
+      {"label": "簡単な計算", "prompt": "25 × 4 = ?"},
+      {"label": "数列問題", "prompt": "次の数列の次の数は？ 2, 6, 12, 20, ?"},
+      {"label": "偶数の合計", "prompt": "1から100までの偶数の合計は？"}
+    ],
+    "code": [
+      {"label": "Python基礎", "prompt": "Pythonで1から10までの数字を出力するコードを書いてください。"},
+      {"label": "JS配列操作", "prompt": "JavaScriptで配列の要素を逆順にする関数を書いてください。"}
+    ],
+    "japanese": [
+      {"label": "枕草子", "prompt": "春はあけぼので始まる文章の続きを書いてください。"},
+      {"label": "俳句を作る", "prompt": "俳句を一つ作ってください。季語を含めてください。"},
+      {"label": "柔術について", "prompt": "柔術について教えて"}
+    ]
+  }
+}
