@@ -1,0 +1,45 @@
+name: Wisbee
+options:
+  bundleIdPrefix: com.enablerdao
+  deploymentTarget:
+    iOS: 16.0
+settings:
+  base:
+    DEVELOPMENT_TEAM: ""
+    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 1
+packages:
+  SpeziLLM:
+    url: https://github.com/StanfordSpezi/SpeziLLM
+    from: 0.8.0
+targets:
+  Wisbee:
+    type: application
+    platform: iOS
+    sources:
+      - path: Wisbee
+        excludes:
+          - "**/*.md"
+    dependencies:
+      - package: SpeziLLM
+        product: SpeziLLM
+      - package: SpeziLLM
+        product: SpeziLLMLocal
+    settings:
+      base:
+        INFOPLIST_FILE: Wisbee/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.enablerdao.wisbee
+        PRODUCT_NAME: Wisbee
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: 5.9
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: YES
+    info:
+      path: Wisbee/Info.plist
+      properties:
+        UILaunchStoryboardName: LaunchScreen
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee - Beautiful AI Chat Interface</title>
+    <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/enablerdao/wisbee/main/wisbee-mac/assets/icon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #b0b0b0;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .download-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .platform-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 500;
+        }
+
+        .download-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .features {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b0b0b0;
+        }
+
+        .github-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .version-info {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Wisbee</div>
+            <ul class="nav-links">
+                <li><a href="#download">ダウンロード</a></li>
+                <li><a href="#features">機能</a></li>
+                <li><a href="https://github.com/enablerdao/wisbee">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Wisbee</h1>
+        <p>美しいAIチャットインターフェース<br>ローカルLLMとOllamaをサポート</p>
+    </section>
+
+    <section id="download" class="download-section">
+        <h2 style="text-align: center; margin-bottom: 2rem;">プラットフォームを選択</h2>
+        <div class="download-grid">
+            <div class="download-card">
+                <div class="platform-icon">🍎</div>
+                <h3>macOS</h3>
+                <p class="version-info">バージョン 1.0.0</p>
+                <p>macOS 10.15以降</p>
+                <a href="https://github.com/enablerdao/wisbee/releases/download/v1.0.0/Wisbee-1.0.0.dmg" class="download-button">DMGをダウンロード</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    Intel & Apple Silicon対応
+                </p>
+            </div>
+
+            <div class="download-card">
+                <div class="platform-icon">🪟</div>
+                <h3>Windows</h3>
+                <p class="version-info">バージョン 1.0.0</p>
+                <p>Windows 10/11</p>
+                <a href="https://github.com/enablerdao/wisbee/releases/download/v1.0.0/Wisbee-Setup-1.0.0.exe" class="download-button">インストーラーをダウンロード</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    64ビット & 32ビット対応
+                </p>
+            </div>
+
+            <div class="download-card">
+                <div class="platform-icon">🐧</div>
+                <h3>Linux</h3>
+                <p class="version-info">バージョン 1.0.0</p>
+                <p>Ubuntu, Fedora, その他</p>
+                <a href="https://github.com/enablerdao/wisbee/releases/download/v1.0.0/Wisbee-1.0.0.AppImage" class="download-button">AppImageをダウンロード</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    <a href="https://github.com/enablerdao/wisbee/releases" style="color: #667eea;">他の形式 (.deb, .rpm)</a>
+                </p>
+            </div>
+
+            <div class="download-card">
+                <div class="platform-icon">📱</div>
+                <h3>iOS</h3>
+                <p class="version-info">バージョン 1.0.0</p>
+                <p>iOS 16.0以降</p>
+                <a href="https://apps.apple.com/app/wisbee/id123456789" class="download-button">App Storeで表示</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    iPhone & iPad対応
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2>主な機能</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🚀 高速レスポンス</h3>
+                <p>ローカルLLMによる即座の応答。インターネット接続不要で、プライバシーも完全に保護されます。</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎨 美しいUI</h3>
+                <p>ダークテーマ、グラデーション、滑らかなアニメーションで快適な使用体験を提供します。</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔧 カスタマイズ可能</h3>
+                <p>モデルの選択、パラメータの調整、プロンプトテンプレートなど、自由にカスタマイズできます。</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌏 多言語対応</h3>
+                <p>日本語を含む多言語に対応。マークダウンレンダリングとシンタックスハイライトも完備。</p>
+            </div>
+            <div class="feature-card">
+                <h3>💻 クロスプラットフォーム</h3>
+                <p>Windows、macOS、Linux、iOSで動作。どこでも同じ体験を提供します。</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔒 プライバシー重視</h3>
+                <p>すべての処理はローカルで実行。データは外部に送信されません。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2024 EnablerDAO. Released under the MIT License.</p>
+        <p style="margin-top: 1rem;">
+            <a href="https://github.com/enablerdao/wisbee" class="github-link">GitHub</a> | 
+            <a href="https://github.com/enablerdao/wisbee/issues" class="github-link">Issues</a> | 
+            <a href="https://github.com/enablerdao/wisbee/releases" class="github-link">All Releases</a>
+        </p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

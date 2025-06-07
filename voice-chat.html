@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Voice Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-bottom: 1px solid #3a3a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .settings {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        select {
+            background: #3a3a3a;
+            color: #e0e0e0;
+            border: 1px solid #4a4a4a;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .message {
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            background: #2c5aa0;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .assistant-message {
+            background: #3a3a3a;
+        }
+        
+        .voice-controls {
+            background: #2a2a2a;
+            border-top: 1px solid #3a3a3a;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .mic-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: #3a3a3a;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mic-button:hover {
+            background: #4a4a4a;
+        }
+        
+        .mic-button.recording {
+            background: #dc3545;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .mic-button.processing {
+            background: #ffc107;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .mic-icon {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+        
+        .status {
+            font-size: 0.9rem;
+            color: #999;
+            height: 20px;
+        }
+        
+        .volume-indicator {
+            width: 200px;
+            height: 4px;
+            background: #3a3a3a;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .volume-bar {
+            height: 100%;
+            background: #4caf50;
+            transition: width 0.1s ease;
+            width: 0%;
+        }
+        
+        .controls-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        input[type="checkbox"] {
+            width: 44px;
+            height: 24px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #3a3a3a;
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+        
+        input[type="checkbox"]:checked {
+            background: #4caf50;
+        }
+        
+        input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        
+        input[type="checkbox"]:checked::before {
+            transform: translateX(20px);
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">🎙️ Ollama Voice Chat</div>
+        <div class="settings">
+            <select id="modelSelect">
+                <option value="gemma3:4b">gemma3:4b</option>
+                <option value="qwen3:latest">qwen3:latest</option>
+                <option value="phi3:mini">phi3:mini</option>
+                <option value="llama3.2:1b">llama3.2:1b</option>
+            </select>
+            <select id="voiceSelect">
+                <option value="ja-JP-Standard-A">日本語 (女性)</option>
+                <option value="ja-JP-Standard-C">日本語 (男性)</option>
+                <option value="en-US-Standard-A">English (Female)</option>
+                <option value="en-US-Standard-B">English (Male)</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="chat-container" id="chatContainer"></div>
+    
+    <div class="voice-controls">
+        <button class="mic-button" id="micButton">
+            <svg class="mic-icon" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+            </svg>
+        </button>
+        <div class="status" id="status">マイクボタンを押して話してください</div>
+        <div class="volume-indicator">
+            <div class="volume-bar" id="volumeBar"></div>
+        </div>
+        <div class="controls-row">
+            <label class="toggle-switch">
+                <input type="checkbox" id="autoSpeak" checked>
+                <span>自動読み上げ</span>
+            </label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="continuousMode">
+                <span>連続会話モード</span>
+            </label>
+        </div>
+    </div>
+    
+    <script type="module">
+        // Import whisper-web-transcriber
+        import { createWhisperTranscriber } from 'https://cdn.jsdelivr.net/npm/whisper-web-transcriber@latest/dist/index.js';
+        
+        class VoiceChat {
+            constructor() {
+                this.isRecording = false;
+                this.isProcessing = false;
+                this.mediaRecorder = null;
+                this.audioChunks = [];
+                this.transcriber = null;
+                this.initElements();
+                this.initSpeech();
+                this.initTranscriber();
+            }
+            
+            initElements() {
+                this.micButton = document.getElementById('micButton');
+                this.status = document.getElementById('status');
+                this.volumeBar = document.getElementById('volumeBar');
+                this.chatContainer = document.getElementById('chatContainer');
+                this.modelSelect = document.getElementById('modelSelect');
+                this.voiceSelect = document.getElementById('voiceSelect');
+                this.autoSpeak = document.getElementById('autoSpeak');
+                this.continuousMode = document.getElementById('continuousMode');
+                
+                this.micButton.addEventListener('click', () => this.toggleRecording());
+            }
+            
+            async initTranscriber() {
+                try {
+                    this.status.textContent = 'Whisperモデルを初期化中...';
+                    this.transcriber = await createWhisperTranscriber({
+                        model: 'tiny',
+                        language: 'ja',
+                        task: 'transcribe'
+                    });
+                    this.status.textContent = 'マイクボタンを押して話してください';
+                } catch (error) {
+                    console.error('Transcriber init error:', error);
+                    this.status.textContent = 'エラー: 音声認識の初期化に失敗しました';
+                }
+            }
+            
+            initSpeech() {
+                this.synthesis = window.speechSynthesis;
+                this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                this.recognition.lang = 'ja-JP';
+                this.recognition.continuous = false;
+                this.recognition.interimResults = true;
+                
+                this.recognition.onresult = (event) => {
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0].transcript)
+                        .join('');
+                    
+                    if (event.results[event.results.length - 1].isFinal) {
+                        this.processTranscript(transcript);
+                    }
+                };
+                
+                this.recognition.onerror = (event) => {
+                    console.error('Recognition error:', event.error);
+                    this.stopRecording();
+                };
+            }
+            
+            async toggleRecording() {
+                if (this.isRecording) {
+                    this.stopRecording();
+                } else {
+                    this.startRecording();
+                }
+            }
+            
+            async startRecording() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.isRecording = true;
+                    this.micButton.classList.add('recording');
+                    this.status.textContent = '録音中...';
+                    
+                    // Volume meter
+                    const audioContext = new AudioContext();
+                    const analyser = audioContext.createAnalyser();
+                    const microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    analyser.fftSize = 256;
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+                    
+                    const updateVolume = () => {
+                        if (!this.isRecording) return;
+                        analyser.getByteFrequencyData(dataArray);
+                        const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+                        this.volumeBar.style.width = `${Math.min(100, average / 2)}%`;
+                        requestAnimationFrame(updateVolume);
+                    };
+                    updateVolume();
+                    
+                    // Start recognition
+                    this.recognition.start();
+                    
+                    // Store stream for later cleanup
+                    this.stream = stream;
+                    this.audioContext = audioContext;
+                    
+                } catch (error) {
+                    console.error('Microphone access error:', error);
+                    this.status.textContent = 'エラー: マイクにアクセスできません';
+                }
+            }
+            
+            stopRecording() {
+                this.isRecording = false;
+                this.micButton.classList.remove('recording');
+                this.volumeBar.style.width = '0%';
+                
+                if (this.recognition) {
+                    this.recognition.stop();
+                }
+                
+                if (this.stream) {
+                    this.stream.getTracks().forEach(track => track.stop());
+                }
+                
+                if (this.audioContext) {
+                    this.audioContext.close();
+                }
+            }
+            
+            async processTranscript(text) {
+                this.addMessage(text, 'user');
+                this.micButton.classList.add('processing');
+                this.status.innerHTML = 'AI応答を生成中<span class="loading-dots"></span>';
+                
+                try {
+                    const response = await this.sendToOllama(text);
+                    this.addMessage(response, 'assistant');
+                    
+                    if (this.autoSpeak.checked) {
+                        await this.speak(response);
+                    }
+                    
+                    if (this.continuousMode.checked) {
+                        setTimeout(() => this.startRecording(), 500);
+                    }
+                } catch (error) {
+                    console.error('Ollama error:', error);
+                    this.addMessage('エラーが発生しました', 'assistant');
+                } finally {
+                    this.micButton.classList.remove('processing');
+                    this.status.textContent = 'マイクボタンを押して話してください';
+                }
+            }
+            
+            async sendToOllama(prompt) {
+                const response = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: this.modelSelect.value,
+                        prompt: prompt,
+                        stream: false
+                    })
+                });
+                
+                const data = await response.json();
+                return data.response;
+            }
+            
+            addMessage(text, sender) {
+                const message = document.createElement('div');
+                message.className = `message ${sender}-message`;
+                message.textContent = text;
+                this.chatContainer.appendChild(message);
+                this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
+            }
+            
+            async speak(text) {
+                return new Promise((resolve) => {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = this.voiceSelect.value.startsWith('ja') ? 'ja-JP' : 'en-US';
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                    utterance.onend = resolve;
+                    this.synthesis.speak(utterance);
+                });
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            new VoiceChat();
+        });
+    </script>
+</body>
+</html>

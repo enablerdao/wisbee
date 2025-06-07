@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Model Testing Web UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #2d2d2d;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .controls {
+            background-color: #2d2d2d;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .model-selector {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .model-selector select {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #3d3d3d;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .max-tokens {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .max-tokens input {
+            width: 80px;
+            padding: 0.5rem;
+            background-color: #3d3d3d;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+
+        .temperature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .temperature input {
+            width: 80px;
+            padding: 0.5rem;
+            background-color: #3d3d3d;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2d2d2d;
+            padding: 1rem;
+            overflow-y: auto;
+            border-right: 1px solid #444;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .prompt-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .prompt-category h4 {
+            color: #4a9eff;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .prompt-item {
+            padding: 0.5rem;
+            margin-bottom: 0.25rem;
+            background-color: #3d3d3d;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .prompt-item:hover {
+            background-color: #4d4d4d;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #1a1a1a;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background-color: #2d4d3d;
+            margin-left: 20%;
+        }
+
+        .assistant-message {
+            background-color: #3d3d4d;
+            margin-right: 20%;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #4a9eff;
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .input-container {
+            background-color: #2d2d2d;
+            padding: 1rem;
+            border-top: 1px solid #444;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        #promptInput {
+            flex: 1;
+            padding: 0.75rem;
+            background-color: #3d3d3d;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 4px;
+            font-size: 1rem;
+            resize: none;
+        }
+
+        .send-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #4a9eff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #3a8eef;
+        }
+
+        .send-button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .clear-button {
+            padding: 0.5rem 1rem;
+            background-color: #666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+
+        .clear-button:hover {
+            background-color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .message {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Ollama Model Testing Web UI</h1>
+    </div>
+
+    <div class="controls">
+        <div class="model-selector">
+            <select id="modelSelect">
+                <option value="llama3.2:1b">llama3.2:1b</option>
+                <option value="phi3:mini">phi3:mini</option>
+                <option value="qwen3:latest">qwen3:latest</option>
+                <option value="gemma3:4b">gemma3:4b</option>
+                <option value="gemma3:1b">gemma3:1b</option>
+            </select>
+        </div>
+        <div class="max-tokens">
+            <label>Max Tokens:</label>
+            <input type="number" id="maxTokens" value="200" min="10" max="2000">
+        </div>
+        <div class="temperature">
+            <label>Temperature:</label>
+            <input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1">
+        </div>
+        <button class="clear-button" onclick="clearChat()">Clear Chat</button>
+    </div>
+
+    <div class="main-content">
+        <div class="sidebar">
+            <h3>Example Prompts</h3>
+            
+            <div class="prompt-category">
+                <h4>🎨 Creative</h4>
+                <div class="prompt-item" onclick="usePrompt('新しい色を発明して、その名前と説明をしてください。')">新しい色を発明</div>
+                <div class="prompt-item" onclick="usePrompt('もし重力が逆だったら世界はどうなる？')">重力が逆の世界</div>
+                <div class="prompt-item" onclick="usePrompt('AIとして感じる「寂しさ」を詩で表現してください。')">AIの寂しさを詩で</div>
+            </div>
+
+            <div class="prompt-category">
+                <h4>🧩 Logic</h4>
+                <div class="prompt-item" onclick="usePrompt('もし全ての猫が動物で、全ての動物が生き物なら、全ての猫は何ですか？')">論理パズル</div>
+                <div class="prompt-item" onclick="usePrompt('3人が3個のケーキを3分で食べます。9人が9個のケーキを食べるのに何分かかりますか？')">ケーキの問題</div>
+            </div>
+
+            <div class="prompt-category">
+                <h4>🔢 Math</h4>
+                <div class="prompt-item" onclick="usePrompt('25 × 4 = ?')">簡単な計算</div>
+                <div class="prompt-item" onclick="usePrompt('次の数列の次の数は？ 2, 6, 12, 20, ?')">数列問題</div>
+                <div class="prompt-item" onclick="usePrompt('1から100までの偶数の合計は？')">偶数の合計</div>
+            </div>
+
+            <div class="prompt-category">
+                <h4>💻 Code</h4>
+                <div class="prompt-item" onclick="usePrompt('Pythonで1から10までの数字を出力するコードを書いてください。')">Python基礎</div>
+                <div class="prompt-item" onclick="usePrompt('JavaScriptで配列の要素を逆順にする関数を書いてください。')">JS配列操作</div>
+            </div>
+
+            <div class="prompt-category">
+                <h4>🌸 Japanese</h4>
+                <div class="prompt-item" onclick="usePrompt('春はあけぼので始まる文章の続きを書いてください。')">枕草子</div>
+                <div class="prompt-item" onclick="usePrompt('俳句を一つ作ってください。季語を含めてください。')">俳句を作る</div>
+                <div class="prompt-item" onclick="usePrompt('柔術について教えて')">柔術について</div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="messages" id="messages"></div>
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea id="promptInput" placeholder="メッセージを入力してください..." rows="1"></textarea>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">送信</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isProcessing = false;
+
+        function adjustTextareaHeight() {
+            const textarea = document.getElementById('promptInput');
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
+        }
+
+        document.getElementById('promptInput').addEventListener('input', adjustTextareaHeight);
+        document.getElementById('promptInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function addMessage(content, isUser = false) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message assistant-message';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'message-header';
+            headerDiv.textContent = isUser ? 'You' : document.getElementById('modelSelect').value;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = content;
+            
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(contentDiv);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            return contentDiv;
+        }
+
+        function addLoadingMessage() {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant-message';
+            messageDiv.id = 'loading-message';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'message-header';
+            headerDiv.textContent = document.getElementById('modelSelect').value;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.innerHTML = '<div class="loading"></div> Generating response...';
+            
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(contentDiv);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function removeLoadingMessage() {
+            const loadingMessage = document.getElementById('loading-message');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+        }
+
+        async function sendMessage() {
+            if (isProcessing) return;
+            
+            const promptInput = document.getElementById('promptInput');
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+            
+            isProcessing = true;
+            document.getElementById('sendButton').disabled = true;
+            
+            addMessage(prompt, true);
+            promptInput.value = '';
+            adjustTextareaHeight();
+            
+            removeLoadingMessage();
+            const messageContent = addMessage('', false);
+            
+            try {
+                const model = document.getElementById('modelSelect').value;
+                const maxTokens = parseInt(document.getElementById('maxTokens').value);
+                const temperature = parseFloat(document.getElementById('temperature').value);
+                
+                const response = await fetch('http://localhost:8899/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        prompt: prompt,
+                        stream: true,
+                        options: {
+                            temperature: temperature,
+                            num_predict: maxTokens
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullResponse = '';
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const line of lines) {
+                        if (line.trim()) {
+                            try {
+                                const data = JSON.parse(line);
+                                if (data.response) {
+                                    fullResponse += data.response;
+                                    messageContent.textContent = fullResponse;
+                                    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing JSON:', e);
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                messageContent.textContent = 'Error: ' + error.message;
+            } finally {
+                isProcessing = false;
+                document.getElementById('sendButton').disabled = false;
+                promptInput.focus();
+            }
+        }
+
+        function usePrompt(prompt) {
+            document.getElementById('promptInput').value = prompt;
+            adjustTextareaHeight();
+            document.getElementById('promptInput').focus();
+        }
+
+        function clearChat() {
+            document.getElementById('messages').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

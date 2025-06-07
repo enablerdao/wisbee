@@ -1,0 +1,387 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 63;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2EF6685F6FFE88815536882F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC47C88C8F8D99361B3BED6 /* ContentView.swift */; };
+		3D99278BDED3FC630D68C942 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D35158DC888B9A834393B3 /* ChatViewModel.swift */; };
+		4F4F570E99350D69B5CEDEC2 /* SpeziLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 955E8CFBBB6D5C3D418A657E /* SpeziLLM */; };
+		66FE1C0F6BACA8D1882EE006 /* SpeziLLMLocal in Frameworks */ = {isa = PBXBuildFile; productRef = 0678999EEBAE0BABEBE47ACF /* SpeziLLMLocal */; };
+		70F88FC3B1D3F6F18CF10A28 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92B0382BB25AF9EF047D2256 /* ChatMessage.swift */; };
+		A63FD1C5AC3EE09A4706C548 /* LLMRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A269E48E6D11A08BC114724C /* LLMRunner.swift */; };
+		BA19574E17AE439F062026E4 /* WisbeeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B24374469C2A704E6852B /* WisbeeApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		027B24374469C2A704E6852B /* WisbeeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WisbeeApp.swift; sourceTree = "<group>"; };
+		36D1E50703B2136978A06757 /* Wisbee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wisbee.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AC47C88C8F8D99361B3BED6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		70D35158DC888B9A834393B3 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		8B44B7830AC7EBA015BD24E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		92B0382BB25AF9EF047D2256 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		A269E48E6D11A08BC114724C /* LLMRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMRunner.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		359C54954FE263AE482D4ABD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F4F570E99350D69B5CEDEC2 /* SpeziLLM in Frameworks */,
+				66FE1C0F6BACA8D1882EE006 /* SpeziLLMLocal in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2514E419CF0A3FF06E26DA89 /* Wisbee */ = {
+			isa = PBXGroup;
+			children = (
+				8B44B7830AC7EBA015BD24E4 /* Info.plist */,
+				027B24374469C2A704E6852B /* WisbeeApp.swift */,
+				3C94631F2BA51343198CC05D /* Models */,
+				7D97907AEEB204FB4BA1923A /* Services */,
+				EDF4DAFA556BAABD8F66B565 /* ViewModels */,
+				A69C4EEF7D74CAEA7CB8A351 /* Views */,
+			);
+			path = Wisbee;
+			sourceTree = "<group>";
+		};
+		273323486097D3BB2062A2E6 = {
+			isa = PBXGroup;
+			children = (
+				2514E419CF0A3FF06E26DA89 /* Wisbee */,
+				D7D14B95EF88A9A58F73F0ED /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3C94631F2BA51343198CC05D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				92B0382BB25AF9EF047D2256 /* ChatMessage.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		7D97907AEEB204FB4BA1923A /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A269E48E6D11A08BC114724C /* LLMRunner.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A69C4EEF7D74CAEA7CB8A351 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4AC47C88C8F8D99361B3BED6 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D7D14B95EF88A9A58F73F0ED /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				36D1E50703B2136978A06757 /* Wisbee.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EDF4DAFA556BAABD8F66B565 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				70D35158DC888B9A834393B3 /* ChatViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		211445FB06D787FA1D7F3420 /* Wisbee */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 67B498D3A649CF67D3BAE965 /* Build configuration list for PBXNativeTarget "Wisbee" */;
+			buildPhases = (
+				498573AE4B56905D4485D8DB /* Sources */,
+				359C54954FE263AE482D4ABD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Wisbee;
+			packageProductDependencies = (
+				955E8CFBBB6D5C3D418A657E /* SpeziLLM */,
+				0678999EEBAE0BABEBE47ACF /* SpeziLLMLocal */,
+			);
+			productName = Wisbee;
+			productReference = 36D1E50703B2136978A06757 /* Wisbee.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F3E0D1A3D4FC156DB988832E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = 3E8C4ED5AD7781B0A6F19A62 /* Build configuration list for PBXProject "Wisbee" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 273323486097D3BB2062A2E6;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4B2FA103E9468A762E5ABE83 /* XCRemoteSwiftPackageReference "SpeziLLM" */,
+			);
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				211445FB06D787FA1D7F3420 /* Wisbee */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		498573AE4B56905D4485D8DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70F88FC3B1D3F6F18CF10A28 /* ChatMessage.swift in Sources */,
+				3D99278BDED3FC630D68C942 /* ChatViewModel.swift in Sources */,
+				2EF6685F6FFE88815536882F /* ContentView.swift in Sources */,
+				A63FD1C5AC3EE09A4706C548 /* LLMRunner.swift in Sources */,
+				BA19574E17AE439F062026E4 /* WisbeeApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0C7690CA476296A525BB8320 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5BV85JW8US;
+				INFOPLIST_FILE = Wisbee/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.enablerdao.wisbee;
+				PRODUCT_NAME = Wisbee;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1687F7676CD3E8A3C0E3A4FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 5BV85JW8US;
+				INFOPLIST_FILE = Wisbee/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.enablerdao.wisbee;
+				PRODUCT_NAME = Wisbee;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ACDD16BC0AC3B71E5D50A4EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C3B0B9877538504F391878E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3E8C4ED5AD7781B0A6F19A62 /* Build configuration list for PBXProject "Wisbee" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ACDD16BC0AC3B71E5D50A4EF /* Debug */,
+				C3B0B9877538504F391878E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		67B498D3A649CF67D3BAE965 /* Build configuration list for PBXNativeTarget "Wisbee" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1687F7676CD3E8A3C0E3A4FF /* Debug */,
+				0C7690CA476296A525BB8320 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4B2FA103E9468A762E5ABE83 /* XCRemoteSwiftPackageReference "SpeziLLM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/StanfordSpezi/SpeziLLM";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0678999EEBAE0BABEBE47ACF /* SpeziLLMLocal */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B2FA103E9468A762E5ABE83 /* XCRemoteSwiftPackageReference "SpeziLLM" */;
+			productName = SpeziLLMLocal;
+		};
+		955E8CFBBB6D5C3D418A657E /* SpeziLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4B2FA103E9468A762E5ABE83 /* XCRemoteSwiftPackageReference "SpeziLLM" */;
+			productName = SpeziLLM;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F3E0D1A3D4FC156DB988832E /* Project object */;
+}

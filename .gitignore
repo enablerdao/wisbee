@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Build directories
+build/
+*/build/
+dist/
+*/dist/
+
+# Logs
+*.log
+logs/
+
+# Xcode
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Wisbee specific
+wisbee-mac/node_modules/
+wisbee-ios/build/
+wisbee/node_modules/
+wisbee/dist/
+
+# Test results
+*_results_*.txt
+*_test_results_*.txt
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
