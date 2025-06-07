@@ -127,7 +127,7 @@ wisbee/
 ├── index.html              # メインUI
 ├── ollama-webui-server.py  # Pythonサーバー
 ├── config.json            # 設定ファイル
-├── ollama-chat-mac/       # Macアプリ版
+├── wisbee-mac/           # Macアプリ版
 │   ├── main-enhanced.js   # 自動セットアップ機能
 │   ├── setup-wizard.html  # セットアップウィザード
 │   └── dist/             # ビルド済みアプリ
