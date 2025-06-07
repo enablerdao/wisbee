@@ -1,9 +1,9 @@
 {
-  "name": "ollama-chat",
-  "productName": "Ollama Chat",
+  "name": "wisbee",
+  "productName": "Wisbee",
   "version": "1.0.0",
-  "description": "A modern chat interface for Ollama models",
-  "main": "main.js",
+  "description": "AIとの対話を、もっと自然に。ローカルLLMチャットアプリ",
+  "main": "main-enhanced.js",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
@@ -21,8 +21,8 @@
     "electron-builder": "^24.9.1"
   },
   "build": {
-    "appId": "com.enablerdao.ollamachat",
-    "productName": "Ollama Chat",
+    "appId": "com.wisbee.app",
+    "productName": "Wisbee",
     "directories": {
       "output": "dist"
     },
@@ -40,12 +40,21 @@
       ]
     },
     "files": [
-      "main.js",
+      "main-enhanced.js",
       "preload.js",
+      "setup-wizard.html",
       "../index.html",
       "../config.json",
       "../ollama-webui-server.py",
+      "assets/**/*",
       "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "app",
+        "filter": ["index.html", "config.json", "ollama-webui-server.py"]
+      }
     ]
   }
 }

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee - AIとの対話を、もっと自然に</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #000;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(-5%, -5%) rotate(0deg); }
+            50% { transform: translate(5%, 5%) rotate(180deg); }
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: bold;
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, #e9d5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            color: #e9d5ff;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+        
+        .download-section {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.4);
+        }
+        
+        .download-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .version-info {
+            font-size: 0.9rem;
+            color: #a78bfa;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: #0a0a0a;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #1a1a1a, #2a1a3a);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .feature-desc {
+            color: #a78bfa;
+            line-height: 1.8;
+        }
+        
+        /* Setup Section */
+        .setup {
+            padding: 100px 20px;
+            background: #0f0f0f;
+            color: white;
+        }
+        
+        .setup-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .step {
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .step-desc {
+            color: #a78bfa;
+        }
+        
+        /* Screenshots */
+        .screenshots {
+            padding: 100px 20px;
+            background: #0a0a0a;
+        }
+        
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .screenshot {
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+        }
+        
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+        
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 50px 20px;
+            background: #000;
+            color: #a78bfa;
+            text-align: center;
+            border-top: 1px solid rgba(124, 58, 237, 0.2);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: #a78bfa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #7c3aed;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .download-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="logo">W</div>
+            <h1>Wisbee</h1>
+            <p class="tagline">AIとの対話を、もっと自然に。</p>
+            
+            <div class="download-section">
+                <a href="dist/Wisbee-1.0.0-arm64.dmg" class="download-btn">
+                    <span>🍎</span>
+                    <span>
+                        Apple Silicon版をダウンロード
+                        <br>
+                        <small class="version-info">M1/M2/M3 Mac用 (94.1 MB)</small>
+                    </span>
+                </a>
+                <a href="dist/Wisbee-1.0.0.dmg" class="download-btn secondary">
+                    <span>💻</span>
+                    <span>
+                        Intel Mac版をダウンロード
+                        <br>
+                        <small class="version-info">Intel Mac用 (100.6 MB)</small>
+                    </span>
+                </a>
+            </div>
+            
+            <p class="version-info">macOS 10.12以降対応 • 完全無料 • オープンソース</p>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">特徴</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">簡単セットアップ</h3>
+                    <p class="feature-desc">初回起動時の自動セットアップウィザードで、Ollamaのインストールからモデルのダウンロードまで全て自動化。技術的な知識は不要です。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">プライバシー重視</h3>
+                    <p class="feature-desc">すべての処理はローカルで実行。インターネット接続は初回セットアップ時のみ必要で、あなたの会話データは一切外部に送信されません。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">高速レスポンス</h3>
+                    <p class="feature-desc">最適化されたローカルLLMにより、クラウドサービスに匹敵する応答速度を実現。ストリーミング対応でリアルタイムな対話体験。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">美しいインターフェース</h3>
+                    <p class="feature-desc">macOSに最適化されたネイティブアプリ。ダークモードに対応した洗練されたデザインで、長時間の使用でも目が疲れません。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌸</div>
+                    <h3 class="feature-title">日本語完全対応</h3>
+                    <p class="feature-desc">日本語に最適化されたモデルを搭載。自然な日本語での対話はもちろん、プログラミングや英語の質問にも対応。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3 class="feature-title">カスタマイズ可能</h3>
+                    <p class="feature-desc">モデルの切り替え、温度設定、最大トークン数など、AIの挙動を細かく調整可能。あなた好みのAIアシスタントに。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Setup Section -->
+    <section class="setup">
+        <div class="container">
+            <h2 class="section-title">かんたん3ステップ</h2>
+            <div class="setup-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">ダウンロード</h3>
+                    <p class="step-desc">お使いのMacに合わせてダウンロード。DMGファイルを開いてアプリケーションフォルダにドラッグ。</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">初回起動</h3>
+                    <p class="step-desc">アプリを右クリックして「開く」を選択。セットアップウィザードが自動的に必要な設定を行います。</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">対話開始</h3>
+                    <p class="step-desc">セットアップ完了！すぐにAIとの対話を始められます。インターネット接続は不要です。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Screenshots Section -->
+    <section class="screenshots">
+        <div class="container">
+            <h2 class="section-title">スクリーンショット</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot">
+                    <img src="assets/screenshot-main.png" alt="メイン画面">
+                </div>
+                <div class="screenshot">
+                    <img src="assets/screenshot-setup.png" alt="セットアップ画面">
+                </div>
+                <div class="screenshot">
+                    <img src="assets/screenshot-chat.png" alt="チャット画面">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/enablerdao/wisbee">GitHub</a>
+                <a href="https://github.com/enablerdao/wisbee/issues">サポート</a>
+                <a href="https://github.com/enablerdao/wisbee/blob/main/LICENSE">ライセンス</a>
+            </div>
+            <p>&copy; 2024 Wisbee. Made with ❤️ by EnablerDAO</p>
+        </div>
+    </footer>
+</body>
+</html>
