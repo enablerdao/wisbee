@@ -22,7 +22,9 @@ class OllamaProxyHandler(SimpleHTTPRequestHandler):
         self.end_headers()
     
     def do_POST(self):
-        if self.path == '/api/generate':
+        if self.path == '/api/generate' or self.path.startswith('/api/'):
+            # Handle all API requests
+            ollama_path = self.path
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             
@@ -32,7 +34,7 @@ class OllamaProxyHandler(SimpleHTTPRequestHandler):
                 
                 # Forward request to Ollama with streaming
                 response = requests.post(
-                    'http://localhost:11434/api/generate',
+                    f'http://localhost:11434{ollama_path}',
                     data=post_data,
                     headers={'Content-Type': 'application/json'},
                     stream=request_data.get('stream', False)
@@ -68,7 +70,22 @@ class OllamaProxyHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/':
-            self.path = '/index.html'
+            self.path = '/ollama-webui.html'
+        elif self.path.startswith('/api/'):
+            # Proxy GET requests to Ollama API
+            try:
+                response = requests.get(f'http://localhost:11434{self.path}')
+                self.send_response(response.status_code)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(response.content)
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                error_response = json.dumps({'error': str(e)})
+                self.wfile.write(error_response.encode())
+            return
         elif self.path == '/config.json':
             # Load config file if exists, otherwise use default
             if os.path.exists('config.json'):

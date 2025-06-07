@@ -11,6 +11,7 @@
 - 🚀 **高速レスポンス** - llama.cppによる最適化された推論
 - 🔄 **Mac連携** - Ollamaサーバーと接続して高性能モデルを使用
 - 💬 **日本語対応** - 日本語での自然な会話が可能
+- 🌐 **オフライン対応** - インターネット接続不要でローカルモデルを使用
 
 ## 📲 インストール方法
 
@@ -42,9 +43,12 @@ open Wisbee.xcodeproj
 ### 使用技術
 - **言語**: Swift 5.9+
 - **UI**: SwiftUI
+- **フレームワーク**: SwiftUI, Combine
 - **LLM**: llama.cpp (SpeziLLM経由)
 - **モデル**: qwen3-abliterated 0.6B (GGUF形式)
+- **モデル形式**: CoreML または GGUF (llama.cpp)
 - **最小iOS**: iOS 16.0
+- **対応デバイス**: iPhone, iPad
 
 ### アーキテクチャ
 ```
@@ -87,15 +91,38 @@ private let modelURL = "https://huggingface.co/your-model.gguf"
 ### UIテーマの変更
 `ContentView.swift`のカラー定義を編集
 
+### モデルの準備
+
+#### オプション1: CoreMLモデル（推奨）
+```bash
+# Python環境でモデルを変換
+pip install coremltools transformers
+
+python convert_to_coreml.py
+```
+
+#### オプション2: llama.cppの使用
+```bash
+# llama.cppをiOS用にビルド
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+make ios
+```
+
 ## 🐛 トラブルシューティング
 
 ### モデルが読み込めない
+- モデルファイルがアプリバンドルに含まれているか確認
 - デバイスのストレージ容量を確認
 - ネットワーク接続を確認（初回ダウンロード時）
 
 ### パフォーマンスが遅い
 - Settings > Wisbee > Model Quality で品質を調整
 - バックグラウンドアプリを終了
+
+### Mac接続ができない
+- 同じWi-Fiネットワークに接続されているか確認
+- MacのファイアウォールでOllamaのポート(11434)が開いているか確認
 
 ## 🚀 今後の予定
 
@@ -104,6 +131,9 @@ private let modelURL = "https://huggingface.co/your-model.gguf"
 - [ ] 画像生成機能
 - [ ] Apple Watch対応
 - [ ] ウィジェット対応
+- [ ] ストリーミングレスポンス
+- [ ] モデルのダウンロード機能
+- [ ] Metal Performance Shadersを使用した高速化
 
 ## 📄 ライセンス
 

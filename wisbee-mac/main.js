@@ -46,19 +46,27 @@ function checkDefaultModel(modelsList) {
 
 // Start the Python server
 function startServer() {
-  const serverPath = path.join(__dirname, 'ollama-webui-server.py');
+  const serverPath = path.join(__dirname, '..', 'ollama-webui-server.py');
   
-  // Check if Python server file exists
+  // Check if Python server file exists in parent directory
   if (!fs.existsSync(serverPath)) {
-    console.error('Python server file not found:', serverPath);
-    dialog.showErrorBox('Server Error', 'Python server file not found');
-    return;
+    // Try current directory
+    const currentDirPath = path.join(__dirname, 'ollama-webui-server.py');
+    if (fs.existsSync(currentDirPath)) {
+      serverPath = currentDirPath;
+    } else {
+      console.error('Python server file not found:', serverPath);
+      dialog.showErrorBox('Server Error', 'Python server file not found');
+      return;
+    }
   }
   
   try {
     serverProcess = spawn('python3', [serverPath, '8899'], {
+      cwd: path.dirname(serverPath),
       stdio: ['pipe', 'pipe', 'pipe'],
-      detached: false
+      detached: false,
+      env: { ...process.env, PYTHONUNBUFFERED: '1' }
     });
     
     serverProcess.stdout.on('data', (data) => {
@@ -97,14 +105,15 @@ function startServer() {
 // Create the main application window
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1400,
+    height: 900,
     minWidth: 800,
     minHeight: 600,
     icon: path.join(__dirname, 'assets/icon.png'),
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
       webSecurity: false,
       webgl: false,
       images: true
@@ -117,8 +126,11 @@ function createWindow() {
   // Create menu
   createMenu();
 
-  // Load the app
-  mainWindow.loadFile('index.html');
+  // Wait for server to start before loading
+  setTimeout(() => {
+    mainWindow.loadURL('http://localhost:8899');
+    mainWindow.show();
+  }, 3000);
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {
@@ -175,6 +187,19 @@ function createMenu() {
         { label: 'Copy', accelerator: 'Cmd+C', role: 'copy' },
         { label: 'Paste', accelerator: 'Cmd+V', role: 'paste' },
         { label: 'Select All', accelerator: 'Cmd+A', role: 'selectAll' }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        { label: 'Reload', accelerator: 'Cmd+R', click: () => mainWindow.reload() },
+        { label: 'Toggle Developer Tools', accelerator: 'Option+Cmd+I', click: () => mainWindow.webContents.toggleDevTools() },
+        { type: 'separator' },
+        { label: 'Actual Size', accelerator: 'Cmd+0', role: 'resetZoom' },
+        { label: 'Zoom In', accelerator: 'Cmd+Plus', role: 'zoomIn' },
+        { label: 'Zoom Out', accelerator: 'Cmd+-', role: 'zoomOut' },
+        { type: 'separator' },
+        { label: 'Toggle Fullscreen', accelerator: 'Control+Cmd+F', role: 'togglefullscreen' }
       ]
     },
     {

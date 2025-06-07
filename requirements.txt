@@ -1,0 +1,9 @@
+# Ollama Chat UI Requirements
+# このアプリはPython標準ライブラリのみを使用しています
+# 追加のパッケージインストールは不要です
+
+# System Requirements:
+# - Python 3.6+
+# - Ollama CLI
+# - macOS 10.15+
+# - 4GB RAM (8GB recommended)

@@ -279,39 +279,6 @@
             word-wrap: break-word;
         }
 
-        .typing-indicator {
-            display: flex;
-            gap: 0.25rem;
-            padding: 0.5rem 0;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                opacity: 0.3;
-                transform: translateY(0);
-            }
-            30% {
-                opacity: 1;
-                transform: translateY(-10px);
-            }
-        }
-
         /* Voice Mode Indicator */
         .voice-indicator {
             display: none;
@@ -720,57 +687,6 @@
         let recognition = null;
         let speechSynthesis = window.speechSynthesis;
 
-        // UI Event Handlers
-        document.getElementById('sidebarToggle').addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-open');
-            }
-        });
-
-        document.getElementById('voiceToggle').addEventListener('click', () => {
-            toggleVoiceMode();
-        });
-
-        document.getElementById('settingsToggle').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.add('active');
-        });
-
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
-        }
-        
-        // Load conversation history from localStorage
-        function loadConversationHistory() {
-            const saved = localStorage.getItem('ollamaConversationHistory');
-            if (saved) {
-                try {
-                    conversationHistory = JSON.parse(saved);
-                    // Display loaded messages
-                    conversationHistory.forEach(msg => {
-                        if (msg.role === 'user') {
-                            addMessage(msg.content, 'user', null, false);
-                        } else {
-                            addMessage(msg.content, 'assistant', msg.model || null, false);
-                        }
-                    });
-                } catch (e) {
-                    console.error('Failed to load conversation history:', e);
-                    conversationHistory = [];
-                }
-            }
-        }
-        
-        // Save conversation history to localStorage
-        function saveConversationHistory() {
-            try {
-                localStorage.setItem('ollamaConversationHistory', JSON.stringify(conversationHistory));
-            } catch (e) {
-                console.error('Failed to save conversation history:', e);
-            }
-        }
-
         // Get list of downloaded models
         async function getDownloadedModels() {
             try {
@@ -821,9 +737,6 @@
                     'gemma2:27b': '~16GB',
                     'gemma:2b': '~1.4GB',
                     'gemma:7b': '~4.8GB',
-                    'gemma3:4b': '~3.3GB',
-                    'gemma3:1b': '~815MB',
-                    'llava:7b': '~4.7GB',
                     'mistral:7b': '~4.1GB',
                     'mistral-nemo:latest': '~7.1GB',
                     'mixtral:8x7b': '~26GB',
@@ -873,10 +786,7 @@
                 'logic': '🧩',
                 'math': '🔢',
                 'code': '💻',
-                'japanese': '🌸',
-                'practical': '💡',
-                'science': '🔬',
-                'philosophy': '🤔'
+                'japanese': '🌸'
             };
             
             Object.entries(config.prompts).forEach(([category, prompts]) => {
@@ -902,6 +812,27 @@
                 
                 container.appendChild(categoryDiv);
             });
+        }
+
+        // UI Event Handlers
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('mobile-open');
+            }
+        });
+
+        document.getElementById('voiceToggle').addEventListener('click', () => {
+            toggleVoiceMode();
+        });
+
+        document.getElementById('settingsToggle').addEventListener('click', () => {
+            document.getElementById('settingsModal').classList.add('active');
+        });
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
         }
 
         function toggleVoiceMode() {
@@ -1029,7 +960,8 @@
         }
 
         function sendVoiceMessage(text) {
-            addMessage(text, 'user', null, true);
+            addMessage(text, 'user');
+            conversationHistory.push({ role: 'user', content: text });
             processMessage(text);
         }
 
@@ -1051,6 +983,7 @@
             speechSynthesis.speak(utterance);
         }
 
+        // Message handling
         function adjustTextareaHeight() {
             const textarea = document.getElementById('promptInput');
             textarea.style.height = 'auto';
@@ -1065,7 +998,7 @@
             }
         });
 
-        function addMessage(content, role = 'assistant', model = null, saveHistory = true) {
+        function addMessage(content, role = 'assistant', model = null) {
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role}-message`;
@@ -1104,52 +1037,7 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             
-            // Save to conversation history if requested
-            if (saveHistory && content) {
-                conversationHistory.push({ 
-                    role: role, 
-                    content: content,
-                    model: model
-                });
-                saveConversationHistory();
-            }
-            
             return textDiv;
-        }
-
-        function addTypingIndicator() {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message assistant-message';
-            messageDiv.id = 'typing-indicator';
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'message-avatar';
-            avatarDiv.textContent = 'AI';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'typing-indicator';
-            typingDiv.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            `;
-            
-            contentDiv.appendChild(typingDiv);
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(contentDiv);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const indicator = document.getElementById('typing-indicator');
-            if (indicator) {
-                indicator.remove();
-            }
         }
 
         async function sendMessage() {
@@ -1162,7 +1050,9 @@
             promptInput.value = '';
             adjustTextareaHeight();
             
-            addMessage(prompt, 'user', null, true);
+            addMessage(prompt, 'user');
+            conversationHistory.push({ role: 'user', content: prompt });
+            
             processMessage(prompt);
         }
 
@@ -1171,8 +1061,7 @@
             document.getElementById('sendButton').disabled = true;
             
             const model = document.getElementById('modelSelect').value;
-            removeTypingIndicator();
-            const messageContent = addMessage('', 'assistant', model, false);
+            const messageContent = addMessage('', 'assistant', model);
             
             try {
                 const maxTokens = parseInt(document.getElementById('maxTokens').value);
@@ -1235,11 +1124,9 @@
                     }
                 }
                 
-                // Update message content and save to history
+                // Add assistant response to conversation history
                 if (fullResponse) {
-                    messageContent.textContent = fullResponse;
-                    conversationHistory.push({ role: 'assistant', content: fullResponse, model: model });
-                    saveConversationHistory();
+                    conversationHistory.push({ role: 'assistant', content: fullResponse });
                     if (isVoiceMode) {
                         speak(fullResponse);
                     }
@@ -1266,7 +1153,6 @@
         function clearChat() {
             document.getElementById('messages').innerHTML = '';
             conversationHistory = [];
-            localStorage.removeItem('ollamaConversationHistory');
         }
 
         // Refresh model list periodically
@@ -1301,9 +1187,6 @@
                 'gemma2:27b': '~16GB',
                 'gemma:2b': '~1.4GB',
                 'gemma:7b': '~4.8GB',
-                'gemma3:4b': '~3.3GB',
-                'gemma3:1b': '~815MB',
-                'llava:7b': '~4.7GB',
                 'mistral:7b': '~4.1GB',
                 'mistral-nemo:latest': '~7.1GB',
                 'mixtral:8x7b': '~26GB',
@@ -1337,9 +1220,7 @@
         }
 
         // Initialize
-        loadConfig().then(() => {
-            loadConversationHistory();
-        });
+        loadConfig();
         
         // Refresh model list every 10 seconds
         setInterval(refreshModelList, 10000);

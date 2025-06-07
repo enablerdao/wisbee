@@ -1,11 +1,13 @@
 {
   "name": "wisbee",
+  "productName": "Wisbee",
   "version": "1.0.0",
-  "description": "Beautiful Ollama Chat & Model Manager for Mac",
-  "main": "electron-main.js",
+  "description": "Beautiful Ollama Chat & Model Manager - AIとの対話を、もっと自然に",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "electron test-basic.js",
+    "pack": "electron-builder --dir",
     "build": "electron-builder",
     "dist": "electron-builder",
     "dist-mac": "electron-builder --mac",
@@ -16,7 +18,7 @@
     "dist-mas": "electron-builder --mac mas",
     "postinstall": "electron-builder install-app-deps"
   },
-  "keywords": ["ollama", "ai", "chat", "llm", "model-manager"],
+  "keywords": ["ollama", "ai", "chat", "llm", "model-manager", "wisbee"],
   "author": "EnablerDAO",
   "license": "MIT",
   "repository": {
@@ -24,8 +26,8 @@
     "url": "https://github.com/enablerdao/wisbee.git"
   },
   "devDependencies": {
-    "electron": "^27.0.0",
-    "electron-builder": "^24.6.4"
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
   },
   "build": {
     "appId": "com.enablerdao.wisbee",
@@ -110,6 +112,23 @@
       ],
       "category": "Development",
       "icon": "assets"
-    }
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "setup-wizard.html",
+      "../index.html",
+      "../config.json",
+      "../ollama-webui-server.py",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../",
+        "to": "app",
+        "filter": ["index.html", "config.json", "ollama-webui-server.py"]
+      }
+    ]
   }
 }

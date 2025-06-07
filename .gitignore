@@ -1,5 +1,6 @@
 # macOS
 .DS_Store
+Thumbs.db
 
 # Node modules
 node_modules/
@@ -10,10 +11,14 @@ build/
 */build/
 dist/
 */dist/
+out/
+*.app
 
 # Logs
 *.log
 logs/
+npm-debug.log*
+yarn-error.log*
 
 # Xcode
 *.xcuserstate
@@ -27,7 +32,16 @@ __pycache__/
 .Python
 env/
 venv/
+ENV/
+.venv
 .env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # Wisbee specific
 wisbee-mac/node_modules/
@@ -38,8 +52,26 @@ wisbee/dist/
 # Test results
 *_results_*.txt
 *_test_results_*.txt
+test_*
+*.test.*
+
+# Config overrides (keep the default)
+config.local.json
+config.override.json
+
+# Backup files
+*.bak
+*.backup
+*_backup
 
 # Temporary files
 *.tmp
 *.temp
 .cache/
+tmp/
+temp/
+.tmp/
+
+# npm
+package-lock.json
+yarn.lock

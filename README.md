@@ -1,8 +1,61 @@
-# Ollama LLM ベンチマークツール
+# Ollama LLM ベンチマークツール & Wisbee チャットアプリ
 
-Ollama言語モデルの性能測定とQ&A評価を行うツールキットです。
+Ollama言語モデルの性能測定とQ&A評価を行うツールキット、および完全プライベートなAIチャットアプリケーション。
 
-## 概要
+## 🚀 Wisbee - AIとの対話を、もっと自然に
+
+完全プライベートなAIチャットアプリ。あなたのデバイスで動く、高性能なローカルLLMチャットアプリケーション。
+
+![Wisbee](https://img.shields.io/badge/Wisbee-AI%20Chat-7c3aed?style=for-the-badge&logo=ai&logoColor=white)
+
+### ✨ 特徴
+
+- 🚀 **ワンクリックセットアップ** - Ollamaもモデルも全て自動インストール
+- 🎨 **美しいダークテーマ** - 目に優しいモダンなインターフェース
+- 💬 **リアルタイムストリーミング** - 応答をリアルタイムで確認
+- 🎯 **複数モデル対応** - 用途に応じてモデルを簡単切り替え
+- ⚙️ **カスタマイズ可能** - トークン数、温度設定などを調整
+- 🌸 **日本語完全対応** - UIから応答まで完全日本語対応
+- 🔒 **完全プライベート** - データは全てローカル処理、外部送信なし
+- 🎙️ **音声チャット対応** - リアルタイム音声入力・出力
+
+### 🚀 クイックスタート
+
+#### Mac版アプリ（推奨）
+
+**技術的な知識は不要！** アプリが全て自動でセットアップします。
+
+1. **ダウンロード**
+   - [Apple Silicon版 (M1/M2/M3)](https://github.com/enablerdao/wisbee/releases) 
+   - [Intel Mac版](https://github.com/enablerdao/wisbee/releases)
+
+2. **インストール**
+   - DMGを開いてアプリをApplicationsフォルダにドラッグ
+   - 初回起動時は右クリック→「開く」
+
+3. **自動セットアップ**
+   - アプリが自動でOllamaとモデルをインストール
+   - 5分程度で完了！
+
+#### Web版（手動セットアップ）
+
+```bash
+# リポジトリをクローン
+git clone https://github.com/enablerdao/wisbee.git
+cd wisbee
+
+# 依存関係をインストール
+pip install requests
+
+# サーバーを起動
+python3 ollama-webui-server.py
+```
+
+ブラウザで `http://localhost:8899` を開く
+
+## 📊 ベンチマークツール
+
+### 概要
 
 このプロジェクトは、Ollamaで動作する各種言語モデルの性能を多角的に評価するための統合ベンチマークツールです。
 
@@ -12,7 +65,7 @@ Ollama言語モデルの性能測定とQ&A評価を行うツールキットで�
 - **obench2.sh** - 包括的なQ&A評価（GPT-4採点オプション付き）
 - **questions.txt** - 15問の日本語評価問題セット
 
-## インストール
+### インストール
 
 ```bash
 # 依存関係のインストール
@@ -22,9 +75,9 @@ brew install jq bc
 brew install ollama
 ```
 
-## 使用方法
+### 使用方法
 
-### 性能ベンチマーク
+#### 性能ベンチマーク
 
 ```bash
 # デフォルトモデルをテスト
@@ -37,7 +90,7 @@ brew install ollama
 ./obench.sh --max-tok 2048
 ```
 
-### Q&A評価
+#### Q&A評価
 
 ```bash
 # GPT-4採点付きQ&A評価
@@ -51,7 +104,7 @@ export OPENAI_API_KEY="your-key-here"
 ./obench2.sh gemma3:1b qwen3:latest --max-tok 128
 ```
 
-## ベンチマーク結果（2025年6月6日）
+## 📈 ベンチマーク結果（2025年6月6日）
 
 ### モデル評価サマリー
 
@@ -62,64 +115,6 @@ export OPENAI_API_KEY="your-key-here"
 | **phi3:mini** | 2.2GB | ⭐⭐⭐ | 高速 | 中 | 可 | コスパ良好 |
 | **llama3.2:1b** | 1.3GB | ⭐⭐ | 高速 | 低 | 可 | 軽量・高速 |
 | **qwen3:1.7b** | 1.4GB | ⭐⭐⭐ | 中速 | 中 | 良好 | 小型で高性能 |
-| **gemma3:1b** | 815MB | ⭐⭐ | 高速 | 低 | 可 | 超軽量 |
-| **llava:7b** | 4.7GB | ⭐⭐ | 極遅 | 低 | 不可 | 画像特化型 |
-| **jaahas/qwen3-abliterated:0.6b** | 396MB | ⭐ | 高速 | 極低 | 不可 | 実用性低い |
-
-### トークン上限別推奨設定
-
-- **7bクラス（llava:7b等）**: 最大2000トークン推奨
-- **1.7b以下クラス**: 最大3000トークン推奨
-- **中型モデル（4b前後）**: デフォルト256トークンで十分
-
-## テスト結果の詳細
-
-### 実施テスト一覧
-
-1. **基本性能テスト** - トークン生成速度の測定
-2. **高度な問題解決** - 論理・数学・プログラミング
-3. **会話継続性** - 文脈保持能力
-4. **コーディング能力** - 実装タスク
-5. **創造的思考** - ストーリー生成・アイデア出し
-6. **日本語理解** - 日本文化・言語特有の理解度
-
-### ログファイル
-
-評価結果は`~/oeval_logs/`にJSONL形式で保存されます。
-
-## プロジェクト構成
-
-```
-bench-llm/
-├── obench.sh              # 性能ベンチマーク
-├── obench2.sh             # Q&A評価ツール
-├── questions.txt          # 評価用質問セット
-├── CLAUDE.md              # プロジェクト指示書
-├── config.json            # 設定ファイル
-└── ollama-chat-ui/        # チャットUIアプリ
-    ├── wisbee-ios/        # iOSアプリ
-    └── standalone/        # スタンドアロン版
-```
-
-## 追加ツール
-
-- **ollama-code-cli/** - CLIベースのコード支援ツール
-- **wisbee-ios/** - iOS向けチャットアプリ
-- **wisbee-mac/** - macOS向けElectronアプリ
-
-## ベンチマーク結論
-
-### 🏆 総合ベスト
-- **gemma3:4b** - バランス最良（速度・精度・日本語）
-- **qwen3:latest** - 精度最高、思考プロセス付き（速度は遅め）
-
-### 💨 軽量高速部門
-- **phi3:mini** - 2.2GBでコスパ最高
-- **llama3.2:1b** - 1.3GBで超高速（精度は低め）
-
-### ❌ 非推奨
-- **llava:7b** - 極端に遅い、画像特化型
-- **jaahas/qwen3-abliterated:0.6b** - 精度が実用レベル以下
 
 ### 📝 使い分けガイド
 - **高精度が必要**: qwen3:latest または gemma3:4b
@@ -151,16 +146,88 @@ pip3 install -r requirements-voice.txt
 
 ブラウザで `http://localhost:8890/realtime-voice-chat.html` を開きます。
 
-### 対応音声
-- 日本語: ななみ（女性）、けいた（男性）
-- 英語: Jenny（女性）、Guy（男性）
+## ⚙️ 設定
 
-## 今後の予定
+`config.json`で以下をカスタマイズ可能：
 
-- Whisper WebAssemblyによる高精度音声認識の統合
-- より詳細なベンチマーク指標の追加
-- マルチモーダル評価の強化
+```json
+{
+  "server": {
+    "port": 8899,
+    "host": "localhost"
+  },
+  "ollama": {
+    "url": "http://localhost:11434",
+    "defaultModel": "qwen3:latest",
+    "models": [
+      "qwen3:latest",
+      "llama3.2:1b",
+      "phi3:mini",
+      "gemma3:4b",
+      "gemma3:1b"
+    ]
+  },
+  "ui": {
+    "defaultMaxTokens": 2000,
+    "defaultTemperature": 0.7,
+    "theme": "dark",
+    "title": "Ollama AI Chat"
+  }
+}
+```
 
-## ライセンス
+## 📁 プロジェクト構成
 
-このプロジェクトはMITライセンスで公開されています。
+```
+bench-llm/
+├── obench.sh              # 性能ベンチマーク
+├── obench2.sh             # Q&A評価ツール
+├── questions.txt          # 評価用質問セット
+├── CLAUDE.md              # プロジェクト指示書
+├── config.json            # 設定ファイル
+├── ollama-webui-server.py # Pythonサーバー
+├── index.html             # メインUI
+├── wisbee-mac/           # macOS向けElectronアプリ
+├── wisbee-ios/           # iOS向けチャットアプリ
+└── ollama-code-cli/      # CLIベースのコード支援ツール
+```
+
+## 🤝 コントリビューション
+
+プルリクエスト大歓迎です！
+
+1. リポジトリをフォーク
+2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add some amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
+
+## 📄 ライセンス
+
+このプロジェクトはMITライセンスで公開されています。詳細は[LICENSE](LICENSE)を参照
+
+## 🙏 謝辞
+
+- [Ollama](https://ollama.ai/) - 素晴らしいローカルLLMランタイム
+- オープンソースモデルの開発者の皆様
+- AIコミュニティの皆様
+
+## ❓ よくある質問
+
+**Q: Ollamaのインストール方法は？**  
+A: Mac版アプリなら自動でインストールされます！手動の場合は[Ollama公式サイト](https://ollama.ai/)から。
+
+**Q: どのモデルがおすすめ？**  
+A: 日本語なら`qwen3:1.7b`、英語なら`llama3.2:1b`がバランスが良いです。
+
+**Q: オフラインで使える？**  
+A: はい！初回セットアップ後は完全オフラインで動作します。
+
+## 📞 サポート
+
+- [Issues](https://github.com/enablerdao/wisbee/issues)でバグ報告
+- [Discussions](https://github.com/enablerdao/wisbee/discussions)で質問
+
+---
+
+Made with ❤️ by [EnablerDAO](https://github.com/enablerdao)
