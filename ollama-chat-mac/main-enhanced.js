@@ -156,9 +156,9 @@ function createMainWindow() {
   // Create application menu
   const template = [
     {
-      label: 'Ollama Chat',
+      label: 'Wisbee',
       submenu: [
-        { label: 'About Ollama Chat', role: 'about' },
+        { label: 'About Wisbee', role: 'about' },
         { type: 'separator' },
         { label: 'Quit', accelerator: 'Command+Q', click: () => app.quit() }
       ]

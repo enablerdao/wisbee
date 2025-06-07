@@ -1,58 +1,67 @@
-# Ollama Chat UI
+# Wisbee - AIとの対話を、もっと自然に
 
-A modern, sleek web interface for interacting with Ollama models locally. Features real-time streaming responses, conversation context, and a beautiful dark theme.
+完全プライベートなAIチャットアプリ。あなたのデバイスで動く、高性能なローカルLLMチャットアプリケーション。
 
-![Ollama Chat UI](https://img.shields.io/badge/Ollama-Chat%20UI-7c3aed?style=for-the-badge&logo=ai&logoColor=white)
+![Wisbee](https://img.shields.io/badge/Wisbee-AI%20Chat-7c3aed?style=for-the-badge&logo=ai&logoColor=white)
 
-## ✨ Features
+## ✨ 特徴
 
-- 🎨 **Modern Dark Theme** - Beautiful, eye-friendly interface
-- 🚀 **Real-time Streaming** - See responses as they're generated
-- 💬 **Conversation Context** - Maintains chat history for contextual responses
-- 🎯 **Multiple Models** - Easy switching between different Ollama models
-- ⚙️ **Configurable** - Customize models, tokens, temperature via config file
-- 📱 **Responsive Design** - Works on desktop and mobile devices
-- 🌸 **Japanese Language Support** - Full support for Japanese prompts and responses
+- 🚀 **ワンクリックセットアップ** - Ollamaもモデルも全て自動インストール
+- 🎨 **美しいダークテーマ** - 目に優しいモダンなインターフェース
+- 💬 **リアルタイムストリーミング** - 応答をリアルタイムで確認
+- 🎯 **複数モデル対応** - 用途に応じてモデルを簡単切り替え
+- ⚙️ **カスタマイズ可能** - トークン数、温度設定などを調整
+- 🌸 **日本語完全対応** - UIから応答まで完全日本語対応
+- 🔒 **完全プライベート** - データは全てローカル処理、外部送信なし
 
-## 🚀 Quick Start
+## 🚀 クイックスタート
 
-### Prerequisites
+### Mac版アプリ（推奨）
 
-1. Install [Ollama](https://ollama.ai/) and ensure it's running on `localhost:11434`
-2. Pull the models you want to use:
+**技術的な知識は不要！** アプリが全て自動でセットアップします。
+
+1. **ダウンロード**
+   - [Apple Silicon版 (M1/M2/M3)](https://github.com/enablerdao/wisbee/releases) 
+   - [Intel Mac版](https://github.com/enablerdao/wisbee/releases)
+
+2. **インストール**
+   - DMGを開いてアプリをApplicationsフォルダにドラッグ
+   - 初回起動時は右クリック→「開く」
+
+3. **自動セットアップ**
+   - アプリが自動でOllamaとモデルをインストール
+   - 5分程度で完了！
+
+### Web版（手動セットアップ）
+
+#### 前提条件
+
+1. [Ollama](https://ollama.ai/)をインストール
+2. 使用するモデルをダウンロード：
 ```bash
-ollama pull qwen3:latest
+ollama pull qwen3:1.7b
 ollama pull llama3.2:1b
-ollama pull phi3:mini
-ollama pull gemma3:4b
-ollama pull gemma3:1b
 ```
 
-3. Python 3.7+ installed
+#### インストール
 
-### Installation
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/enablerdao/ollama-chat-ui.git
-cd ollama-chat-ui
-```
+# リポジトリをクローン
+git clone https://github.com/enablerdao/wisbee.git
+cd wisbee
 
-2. Install dependencies:
-```bash
+# 依存関係をインストール
 pip install requests
-```
 
-3. Start the server:
-```bash
+# サーバーを起動
 python3 ollama-webui-server.py
 ```
 
-4. Open your browser and navigate to `http://localhost:8899`
+ブラウザで `http://localhost:8899` を開く
 
-## 🎛️ Configuration
+## ⚙️ 設定
 
-Edit `config.json` to customize:
+`config.json`で以下をカスタマイズ可能：
 
 ```json
 {
@@ -80,80 +89,86 @@ Edit `config.json` to customize:
 }
 ```
 
-## 🎯 Usage
+## 🎯 使い方
 
-### Basic Chat
-1. Type your message in the input field
-2. Press Enter or click Send
-3. Watch the response stream in real-time
+### 基本的なチャット
+1. メッセージを入力
+2. EnterキーまたはSendボタンをクリック
+3. リアルタイムで応答を確認
 
-### Using Example Prompts
-- Click on any prompt in the sidebar to use it
-- Categories include: Creative, Logic, Math, Code, and Japanese
+### サンプルプロンプト
+- サイドバーのプロンプトをクリックして使用
+- カテゴリ：創造的、論理、数学、コード、日本語
 
-### Model Switching
-- Use the dropdown in the header to switch between models
-- Each model has different capabilities and speeds
+### モデル切り替え
+- ヘッダーのドロップダウンでモデルを選択
+- 各モデルで性能と速度が異なります
 
-### Adjusting Parameters
-- **Max Tokens**: Control response length (10-8000)
-- **Temperature**: Control creativity (0.0-2.0)
-  - Lower = more focused/deterministic
-  - Higher = more creative/random
+### パラメータ調整
+- **Max Tokens**: 応答の長さ (10-8000)
+- **Temperature**: 創造性 (0.0-2.0)
+  - 低い = より正確・一貫性
+  - 高い = より創造的・多様
 
-## 🛠️ Custom Deployment
+## 🛠️ カスタム設定
 
-### Running on Different Port
+### 異なるポートで実行
 ```bash
 python3 ollama-webui-server.py 8080
 ```
 
-### Running with Custom Config
-Create your own `config.json` in the project directory.
+### カスタム設定ファイル
+プロジェクトディレクトリに独自の`config.json`を作成
 
-## 📝 Project Structure
+## 📁 プロジェクト構成
 
 ```
-ollama-chat-ui/
-├── index.html          # Main UI file
-├── ollama-webui-server.py  # Python server with CORS proxy
-├── config.json         # Configuration file
-├── LICENSE            # MIT License
-└── README.md          # This file
+wisbee/
+├── index.html              # メインUI
+├── ollama-webui-server.py  # Pythonサーバー
+├── config.json            # 設定ファイル
+├── ollama-chat-mac/       # Macアプリ版
+│   ├── main-enhanced.js   # 自動セットアップ機能
+│   ├── setup-wizard.html  # セットアップウィザード
+│   └── dist/             # ビルド済みアプリ
+└── README.md             # このファイル
 ```
 
-## 🤝 Contributing
+## 🤝 コントリビューション
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+プルリクエスト大歓迎です！
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. リポジトリをフォーク
+2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add some amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成
 
-## 📄 License
+## 📄 ライセンス
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - 詳細は[LICENSE](LICENSE)を参照
 
-## 🙏 Acknowledgments
+## 🙏 謝辞
 
-- [Ollama](https://ollama.ai/) for the amazing local LLM runtime
-- All the open-source model creators
-- The AI community for continuous inspiration
+- [Ollama](https://ollama.ai/) - 素晴らしいローカルLLMランタイム
+- オープンソースモデルの開発者の皆様
+- AIコミュニティの皆様
 
-## 🐛 Known Issues
+## ❓ よくある質問
 
-- Large conversations may slow down after many messages (clear chat to reset)
-- Some models may not support Japanese well
-- Streaming may not work properly with some proxy configurations
+**Q: Ollamaのインストール方法は？**  
+A: Mac版アプリなら自動でインストールされます！手動の場合は[Ollama公式サイト](https://ollama.ai/)から。
 
-## 📞 Support
+**Q: どのモデルがおすすめ？**  
+A: 日本語なら`qwen3:1.7b`、英語なら`llama3.2:1b`がバランスが良いです。
 
-For issues and questions:
-- Open an issue on GitHub
-- Check existing issues for solutions
-- Ensure Ollama is running and accessible
+**Q: オフラインで使える？**  
+A: はい！初回セットアップ後は完全オフラインで動作します。
+
+## 📞 サポート
+
+- [Issues](https://github.com/enablerdao/wisbee/issues)でバグ報告
+- [Discussions](https://github.com/enablerdao/wisbee/discussions)で質問
 
 ---
 
