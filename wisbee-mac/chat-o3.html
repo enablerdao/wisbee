@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee AI Chat - ChatGPT o3 Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2b2b2b;
+            --text-primary: #e0e0e0;
+            --text-secondary: #9e9e9e;
+            --accent: #10a37f;
+            --accent-hover: #0e906f;
+            --border: #363636;
+            --user-bubble: #2b2b2b;
+            --assistant-bg: transparent;
+            --hover-bg: #2a2a2a;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left Sidebar - 15% width */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .sidebar-actions {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .action-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .action-icon {
+            font-size: 1rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        .gpts-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .section-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .gpt-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        .gpt-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .gpt-item.active {
+            background: var(--hover-bg);
+        }
+
+        .gpt-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10a37f, #0d8f6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .gpt-name {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        /* Main Content Area - 85% width */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Top Header */
+        .top-header {
+            height: 60px;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-primary);
+        }
+
+        .model-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .model-selector:hover {
+            background: var(--hover-bg);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .share-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #10a37f, #0d8f6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .pro-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.6rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 1rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .message {
+            margin-bottom: 2rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-user {
+            display: flex;
+            justify-content: center;
+        }
+
+        .user-message {
+            background: var(--user-bubble);
+            color: var(--text-primary);
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            max-width: 70%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message-assistant {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .assistant-content {
+            background: var(--assistant-bg);
+        }
+
+        .assistant-content p {
+            margin-bottom: 1rem;
+        }
+
+        .assistant-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .assistant-content ul, .assistant-content ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .assistant-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .assistant-content strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .assistant-content h1, .assistant-content h2, .assistant-content h3 {
+            color: var(--text-primary);
+            margin: 1.5rem 0 1rem 0;
+            font-weight: 600;
+        }
+
+        .assistant-content h1 { font-size: 1.5rem; }
+        .assistant-content h2 { font-size: 1.25rem; }
+        .assistant-content h3 { font-size: 1.1rem; }
+
+        /* Code blocks */
+        .assistant-content pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .assistant-content code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.875rem;
+        }
+
+        .assistant-content p code {
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* URL citation tags */
+        .citation-tag {
+            display: inline-block;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin: 0 2px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .citation-tag:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Input Area */
+        .input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg-primary);
+        }
+
+        .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .input-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 1rem 3rem 1rem 1.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            width: 100%;
+            min-height: 56px;
+            max-height: 200px;
+            line-height: 1.5;
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus {
+            border-color: var(--accent);
+        }
+
+        .input-box::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .send-button {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent);
+            border: none;
+            border-radius: 12px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: white;
+        }
+
+        .send-button:hover {
+            background: var(--accent-hover);
+        }
+
+        .send-button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Search Widget */
+        .search-widget {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-icon {
+            color: #4285f4;
+            font-size: 1.25rem;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-control {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .search-control:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Thinking animation */
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin: 1rem 0;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .thinking-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: thinking 1.4s ease-in-out infinite both;
+        }
+
+        .thinking-dot:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes thinking {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Custom scrollbar */
+        .messages-container::-webkit-scrollbar,
+        .gpts-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-track,
+        .gpts-section::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb,
+        .gpts-section::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb:hover,
+        .gpts-section::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .sidebar .action-item span:not(.action-icon),
+            .sidebar .gpt-name,
+            .sidebar .section-title {
+                display: none;
+            }
+
+            .logo span:not(.logo-icon) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🐝</span>
+                <span>Wisbee</span>
+            </div>
+        </div>
+
+        <div class="sidebar-actions">
+            <div class="action-item" onclick="newChat()">
+                <span class="action-icon">+</span>
+                <span>New chat</span>
+            </div>
+            <div class="action-item">
+                <span class="action-icon">🔍</span>
+                <span>Search chats</span>
+            </div>
+            <div class="action-item">
+                <span class="action-icon">📚</span>
+                <span>Library</span>
+            </div>
+        </div>
+
+        <div class="gpts-section">
+            <div class="section-title">利用可能なモデル</div>
+            
+            <div class="gpt-item active" data-model="llama3.2:latest">
+                <div class="gpt-avatar">L</div>
+                <div class="gpt-name">Llama3.2</div>
+            </div>
+            
+            <div class="gpt-item" data-model="gemma2:2b">
+                <div class="gpt-avatar">G</div>
+                <div class="gpt-name">Gemma2 2B</div>
+            </div>
+            
+            <div class="gpt-item" data-model="qwen2.5:0.5b">
+                <div class="gpt-avatar">Q</div>
+                <div class="gpt-name">Qwen2.5 0.5B</div>
+            </div>
+            
+            <div class="gpt-item" data-model="llama3.2:1b">
+                <div class="gpt-avatar">L</div>
+                <div class="gpt-name">Llama3.2 1B</div>
+            </div>
+            
+            <div class="gpt-item" data-model="smollm2:135m">
+                <div class="gpt-avatar">S</div>
+                <div class="gpt-name">SmolLM2 135M</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 1.5rem;">カスタム GPT</div>
+            
+            <div class="gpt-item">
+                <div class="gpt-avatar">💻</div>
+                <div class="gpt-name">コーディング補助</div>
+            </div>
+            
+            <div class="gpt-item">
+                <div class="gpt-avatar">📝</div>
+                <div class="gpt-name">文章校正</div>
+            </div>
+            
+            <div class="gpt-item">
+                <div class="gpt-avatar">🎨</div>
+                <div class="gpt-name">クリエイティブ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <button class="model-selector" onclick="toggleModelMenu()">
+                <span id="current-model">Wisbee o3</span>
+                <span>▾</span>
+            </button>
+
+            <div class="header-actions">
+                <button class="share-btn">
+                    <span>↗</span>
+                    <span>Share</span>
+                </button>
+                <div class="user-avatar">
+                    Y
+                    <div class="pro-badge">PRO</div>
+                </div>
+                <button class="menu-btn">⋯</button>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="messages-container" id="messages">
+                <!-- Welcome message -->
+                <div class="message message-assistant">
+                    <div class="assistant-content">
+                        <h2>🐝 Wisbee へようこそ！</h2>
+                        <p><strong>ChatGPTより安全・無料・オープンなAI</strong>です。</p>
+                        <p>完全にローカルで動作するため、あなたのプライバシーは100%保護されます。何でもお気軽にお聞きください！</p>
+                        
+                        <h3>✨ 主な特徴</h3>
+                        <ul>
+                            <li><strong>完全無料</strong> - 月額料金や利用制限なし</li>
+                            <li><strong>プライバシー保護</strong> - データは外部に送信されません</li>
+                            <li><strong>オフライン動作</strong> - インターネット接続不要</li>
+                            <li><strong>高速レスポンス</strong> - ローカル処理で即座に応答</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        class="input-box" 
+                        placeholder="メッセージを入力してください..."
+                        rows="1"
+                        onkeydown="handleKeyDown(event)"
+                        oninput="adjustTextareaHeight(this)"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">
+                        <span>↗</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Wisbee can make mistakes. Check important info.
+        </div>
+    </div>
+
+    <script>
+        let currentModel = 'llama3.2:latest';
+        let isGenerating = false;
+        let conversationHistory = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadModels();
+            focusInput();
+        });
+
+        function focusInput() {
+            document.getElementById('messageInput').focus();
+        }
+
+        function adjustTextareaHeight(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function newChat() {
+            conversationHistory = [];
+            document.getElementById('messages').innerHTML = `
+                <div class="message message-assistant">
+                    <div class="assistant-content">
+                        <h2>🐝 Wisbee へようこそ！</h2>
+                        <p><strong>ChatGPTより安全・無料・オープンなAI</strong>です。</p>
+                        <p>完全にローカルで動作するため、あなたのプライバシーは100%保護されます。何でもお気軽にお聞きください！</p>
+                        
+                        <h3>✨ 主な特徴</h3>
+                        <ul>
+                            <li><strong>完全無料</strong> - 月額料金や利用制限なし</li>
+                            <li><strong>プライバシー保護</strong> - データは外部に送信されません</li>
+                            <li><strong>オフライン動作</strong> - インターネット接続不要</li>
+                            <li><strong>高速レスポンス</strong> - ローカル処理で即座に応答</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            focusInput();
+        }
+
+        // Model selection
+        document.querySelectorAll('.gpt-item[data-model]').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                document.querySelectorAll('.gpt-item').forEach(el => el.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Update current model
+                currentModel = this.dataset.model;
+                document.getElementById('current-model').textContent = this.querySelector('.gpt-name').textContent;
+            });
+        });
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const message = messageInput.value.trim();
+
+            if (!message || isGenerating) return;
+
+            // Disable input and button
+            isGenerating = true;
+            messageInput.disabled = true;
+            sendButton.disabled = true;
+
+            // Add user message to UI
+            addMessageToUI('user', message);
+            
+            // Clear input
+            messageInput.value = '';
+            adjustTextareaHeight(messageInput);
+
+            // Add thinking indicator
+            const thinkingId = addThinkingIndicator();
+
+            try {
+                // Add to conversation history
+                conversationHistory.push({ role: 'user', content: message });
+
+                // Send to API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: currentModel,
+                        messages: conversationHistory,
+                        stream: true
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                // Remove thinking indicator
+                removeThinkingIndicator(thinkingId);
+
+                // Create assistant message container
+                const assistantMessageDiv = addMessageToUI('assistant', '');
+
+                // Stream the response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let assistantResponse = '';
+
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+                                if (data.message && data.message.content) {
+                                    assistantResponse += data.message.content;
+                                    updateAssistantMessage(assistantMessageDiv, assistantResponse);
+                                }
+                            } catch (e) {
+                                // Ignore parsing errors
+                            }
+                        }
+                    }
+                }
+
+                // Add to conversation history
+                conversationHistory.push({ role: 'assistant', content: assistantResponse });
+
+            } catch (error) {
+                console.error('Error:', error);
+                
+                // Remove thinking indicator if it exists
+                removeThinkingIndicator(thinkingId);
+                
+                addMessageToUI('assistant', '申し訳ありません。エラーが発生しました。Ollamaサーバーが起動していることを確認してください。');
+            } finally {
+                // Re-enable input and button
+                isGenerating = false;
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                focusInput();
+            }
+        }
+
+        function addMessageToUI(role, content) {
+            const messagesContainer = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${role}`;
+
+            if (role === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="user-message">
+                        ${escapeHtml(content)}
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="assistant-content">
+                        ${marked.parse(content)}
+                    </div>
+                `;
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Apply syntax highlighting if there are code blocks
+            if (role === 'assistant' && content.includes('```')) {
+                Prism.highlightAllUnder(messageDiv);
+            }
+
+            return messageDiv;
+        }
+
+        function updateAssistantMessage(messageDiv, content) {
+            const assistantContent = messageDiv.querySelector('.assistant-content');
+            assistantContent.innerHTML = marked.parse(content);
+            
+            // Apply syntax highlighting
+            Prism.highlightAllUnder(assistantContent);
+            
+            // Scroll to bottom
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addThinkingIndicator() {
+            const messagesContainer = document.getElementById('messages');
+            const thinkingDiv = document.createElement('div');
+            const thinkingId = 'thinking-' + Date.now();
+            thinkingDiv.id = thinkingId;
+            thinkingDiv.className = 'thinking';
+            thinkingDiv.innerHTML = `
+                <span>AIが考えています</span>
+                <div class="thinking-dots">
+                    <div class="thinking-dot"></div>
+                    <div class="thinking-dot"></div>
+                    <div class="thinking-dot"></div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(thinkingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return thinkingId;
+        }
+
+        function removeThinkingIndicator(thinkingId) {
+            const thinkingDiv = document.getElementById(thinkingId);
+            if (thinkingDiv) {
+                thinkingDiv.remove();
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load available models
+        async function loadModels() {
+            try {
+                const response = await fetch('/api/tags');
+                const data = await response.json();
+                
+                if (data.models && data.models.length > 0) {
+                    console.log('Available models:', data.models.map(m => m.name));
+                }
+            } catch (error) {
+                console.error('Error loading models:', error);
+            }
+        }
+
+        function toggleModelMenu() {
+            // This would open a model selection menu
+            console.log('Toggle model menu');
+        }
+    </script>
+</body>
+</html>

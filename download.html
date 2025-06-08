@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee - AIとの対話を、もっと自然に</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #141414 0%, #0a0a0a 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%237c3aed" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .logo-large {
+            font-size: 8rem;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            margin-bottom: 3rem;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            border-color: #7c3aed;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .platform-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-specs {
+            font-size: 0.875rem;
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: #0a0a0a;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .instructions h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #a78bfa;
+        }
+
+        .instructions ol {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .instructions li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .instructions li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: #7c3aed;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 6rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #7c3aed;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.25rem;
+            }
+
+            .logo-large {
+                font-size: 6rem;
+            }
+
+            .download-section {
+                padding: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="logo-large">🐝</div>
+                <h1>Wisbee</h1>
+                <p class="tagline">AIとの対話を、もっと自然に</p>
+            </div>
+
+            <div class="download-section fade-in">
+                <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">今すぐダウンロード</h2>
+                
+                <div class="download-grid">
+                    <div class="download-card">
+                        <div class="platform-icon">🍎</div>
+                        <div class="platform-name">Mac (Intel)</div>
+                        <div class="platform-specs">macOS 10.12以降<br>Intel プロセッサ</div>
+                        <a href="https://github.com/enablerdao/wisbee/releases/latest/download/Wisbee-1.0.0.dmg" class="download-btn">
+                            <span>ダウンロード</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+
+                    <div class="download-card">
+                        <div class="platform-icon">🍎</div>
+                        <div class="platform-name">Mac (Apple Silicon)</div>
+                        <div class="platform-specs">macOS 10.12以降<br>M1/M2/M3 チップ</div>
+                        <a href="https://github.com/enablerdao/wisbee/releases/latest/download/Wisbee-1.0.0-arm64.dmg" class="download-btn">
+                            <span>ダウンロード</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <h3>📱 初回起動時の手順</h3>
+                    <ol>
+                        <li>ダウンロードしたDMGファイルを開きます</li>
+                        <li>Wisbeeアプリをアプリケーションフォルダにドラッグ&ドロップ</li>
+                        <li>アプリケーションフォルダでWisbeeを右クリック → 「開く」を選択</li>
+                        <li>セキュリティ警告が出たら「開く」をクリック</li>
+                        <li>自動セットアップウィザードが起動し、必要なコンポーネントをインストール</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem;">特徴</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">かんたんセットアップ</h3>
+                    <p class="feature-desc">初回起動時に必要なすべてのコンポーネントを自動インストール。難しい設定は一切不要です。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">完全プライベート</h3>
+                    <p class="feature-desc">すべての処理はあなたのMac上で実行。会話データが外部に送信されることはありません。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">豊富なAIモデル</h3>
+                    <p class="feature-desc">用途に合わせて様々なAIモデルを選択可能。軽量モデルから高性能モデルまで対応。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">自然な対話</h3>
+                    <p class="feature-desc">洗練されたインターフェースで、AIとの対話がより自然で快適に。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-title">日本語対応</h3>
+                    <p class="feature-desc">インターフェースから応答まで、完全に日本語に対応しています。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">高速レスポンス</h3>
+                    <p class="feature-desc">ローカル実行により、クラウドサービスよりも高速な応答を実現。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/enablerdao/wisbee">GitHub</a>
+                <a href="https://github.com/enablerdao/wisbee/issues">サポート</a>
+                <a href="https://github.com/enablerdao/wisbee/releases">リリースノート</a>
+            </div>
+            <p style="color: #666;">© 2024 Wisbee. Made with 🐝 and ❤️</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
