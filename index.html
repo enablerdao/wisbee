@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wisbee 🐝</title>
+    <title>Wisbee - AI Chat Application</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --bg-primary: #0a0a0a;
-            --bg-secondary: #141414;
+            --bg-secondary: #111111;
             --bg-tertiary: #1a1a1a;
             --text-primary: #ffffff;
             --text-secondary: #a0a0a0;
             --accent: #f59e0b;
             --accent-hover: #dc8a0a;
             --border: #2a2a2a;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
+            --gradient: linear-gradient(135deg, #f59e0b 0%, #dc8a0a 100%);
         }
 
         * {
@@ -30,1326 +29,420 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* Header */
-        .header {
-            background: var(--bg-secondary);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-            background: rgba(20, 20, 20, 0.8);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent), #dc8a0a);
-            border-radius: 8px;
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 20px;
+            background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            position: relative;
         }
 
-        .logo-text h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .logo-text p {
-            font-size: 0.75rem;
+        .hero .subtitle {
+            font-size: 1.5rem;
             color: var(--text-secondary);
-            margin-top: -0.125rem;
+            margin-bottom: 2rem;
+            font-weight: 400;
         }
 
-        /* Header Controls */
-        .header-controls {
+        .hero .description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Download Section */
+        .download-section {
             display: flex;
-            gap: 0.5rem;
-            align-items: center;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
         }
 
-        .btn-icon {
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
             background: var(--bg-tertiary);
             color: var(--text-primary);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
             border: 1px solid var(--border);
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
+            transition: all 0.3s ease;
+            min-width: 200px;
             justify-content: center;
+        }
+
+        .download-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .download-btn i {
             font-size: 1.2rem;
         }
 
-        .btn-icon:hover {
+        .download-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Demo Section */
+        .demo-section {
             background: var(--bg-secondary);
-            border-color: var(--accent);
-            transform: translateY(-2px);
+            padding: 4rem 2rem;
+            text-align: center;
         }
 
-        .btn-icon.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: var(--bg-primary);
-        }
-
-        /* Main Layout */
-        .main-container {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-            max-width: 1400px;
+        .demo-content {
+            max-width: 1200px;
             margin: 0 auto;
-            width: 100%;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-            width: 0;
-        }
-
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
+        .demo-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
             color: var(--text-primary);
         }
 
-        .prompt-categories {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-        }
-
-        .prompt-category {
-            margin-bottom: 1.5rem;
-        }
-
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
+        .demo-section p {
+            font-size: 1.1rem;
             color: var(--text-secondary);
-            font-size: 0.875rem;
+            margin-bottom: 3rem;
+        }
+
+        .demo-link {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .prompt-item {
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.875rem;
+        .demo-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
         }
 
-        .prompt-item:hover {
-            background: var(--bg-primary);
-            border-color: var(--accent);
-            transform: translateX(4px);
-        }
-
-        /* Chat Area */
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem;
             background: var(--bg-primary);
         }
 
-        .messages {
-            flex: 1;
-            overflow-y: auto;
+        .features-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
             padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
 
-        .message {
-            display: flex;
-            gap: 1rem;
-            animation: messageSlide 0.3s ease-out;
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.1);
         }
 
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
             }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .download-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .download-btn {
+                min-width: 250px;
+            }
+
+            .features h2,
+            .demo-section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
-
-        .user-message .message-avatar {
-            background: var(--accent);
-        }
-
-        .assistant-message .message-avatar {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-        }
-
-        .message-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .message-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .message-role {
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .message-model {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            background: var(--bg-tertiary);
-            padding: 0.125rem 0.5rem;
-            border-radius: 4px;
-        }
-
-        .message-text {
-            color: var(--text-primary);
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .typing-indicator {
-            display: flex;
-            gap: 0.25rem;
-            padding: 0.5rem 0;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                opacity: 0.3;
-                transform: translateY(0);
-            }
-            30% {
-                opacity: 1;
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Voice Mode Indicator */
-        .voice-indicator {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            gap: 1rem;
-        }
-
-        .voice-indicator.active {
-            display: flex;
-        }
-
-        .voice-visualizer {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            height: 40px;
-        }
-
-        .voice-bar {
-            width: 4px;
-            background: var(--accent);
-            border-radius: 2px;
-            transition: height 0.1s ease;
-        }
-
-        /* Input Area */
-        .input-container {
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .input-container.voice-mode {
-            background: linear-gradient(to top, var(--bg-secondary), rgba(245, 158, 11, 0.1));
-        }
-
-        .input-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            gap: 1rem;
-            align-items: flex-end;
-        }
-
-        .input-field {
-            flex: 1;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: all 0.2s;
-        }
-
-        .input-field:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
-
-        #promptInput {
-            flex: 1;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-            max-height: 120px;
-        }
-
-        .send-button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .send-button:hover:not(:disabled) {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        }
-
-        .send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Voice Controls */
-        .voice-controls {
-            display: none;
-            max-width: 800px;
-            margin: 0 auto;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .voice-controls.active {
-            display: flex;
-        }
-
-        .mic-button {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: none;
-            background: var(--accent);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
-        }
-
-        .mic-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 30px rgba(245, 158, 11, 0.4);
-        }
-
-        .mic-button.recording {
-            background: #ef4444;
-            animation: recordingPulse 1.5s infinite;
-        }
-
-        @keyframes recordingPulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .voice-status {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Settings Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        .settings-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .settings-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .settings-group select,
-        .settings-group input {
-            width: 100%;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.2s;
-        }
-
-        .settings-group select:hover,
-        .settings-group input:hover {
-            border-color: var(--accent);
-        }
-
-        .settings-group select:focus,
-        .settings-group input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                height: 100%;
-                z-index: 100;
-                transform: translateX(-100%);
-            }
-
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .header-content {
-                padding: 0;
-            }
-
-            .messages {
-                padding: 1rem;
-            }
-
-            .input-container {
-                padding: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">🐝</div>
-                <div class="logo-text">
-                    <h1>Wisbee 🐝</h1>
-                    <p>AIとの対話を、もっと自然に</p>
-                </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <span class="hero-icon">🐝</span>
+            <h1>Wisbee</h1>
+            <p class="subtitle">AIとの対話を、もっと自然に</p>
+            <p class="description">
+                Wisbeeは、Ollamaを使ったローカルAIチャットアプリケーションです。
+                プライバシーを保護しながら、高性能なAIモデルと自然な会話を楽しめます。
+            </p>
+            
+            <div class="download-section">
+                <a href="https://github.com/enablerdao/wisbee/releases/download/v1.0.0/Wisbee-1.0.0-arm64.dmg" class="download-btn" data-platform="mac">
+                    <i class="fab fa-apple"></i>
+                    Download for macOS
+                </a>
+                <a href="https://github.com/enablerdao/wisbee/releases" class="download-btn" data-platform="github">
+                    <i class="fab fa-github"></i>
+                    All Releases
+                </a>
             </div>
-            <div class="header-controls">
-                <button class="btn-icon" id="sidebarToggle" title="サイドバー">
-                    <span>📝</span>
-                </button>
-                <button class="btn-icon" id="voiceToggle" title="音声モード">
-                    <span>📞</span>
-                </button>
-                <button class="btn-icon" id="settingsToggle" title="設定">
-                    <span>⚙️</span>
-                </button>
-                <button class="btn-icon" onclick="clearChat()" title="クリア">
-                    <span>🗑️</span>
-                </button>
+            
+            <div class="download-info">
+                <p>macOS 11.0以上 | Apple Silicon & Intel対応</p>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="main-container">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2>💡 プロンプト例</h2>
-            </div>
-            <div class="prompt-categories" id="promptCategories"></div>
+    <!-- Demo Section -->
+    <section class="demo-section">
+        <div class="demo-content fade-in">
+            <h2>オンラインで試す</h2>
+            <p>アプリをダウンロードする前に、ブラウザでWisbeeを体験してみてください</p>
+            <a href="/chat.html" class="demo-link">
+                <i class="fas fa-play"></i>
+                デモを試す
+            </a>
         </div>
+    </section>
 
-        <div class="chat-container">
-            <div class="messages" id="messages"></div>
-            <div class="voice-indicator" id="voiceIndicator">
-                <div class="voice-visualizer">
-                    <div class="voice-bar" style="height: 10px"></div>
-                    <div class="voice-bar" style="height: 20px"></div>
-                    <div class="voice-bar" style="height: 15px"></div>
-                    <div class="voice-bar" style="height: 25px"></div>
-                    <div class="voice-bar" style="height: 18px"></div>
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-content fade-in">
+            <h2>主な機能</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>プライバシー重視</h3>
+                    <p>すべての処理がローカルで実行され、データが外部に送信されることはありません</p>
                 </div>
-                <div class="voice-status">音声認識中...</div>
-            </div>
-            <div class="input-container" id="inputContainer">
-                <div class="input-wrapper" id="textInputWrapper">
-                    <div class="input-field">
-                        <textarea 
-                            id="promptInput" 
-                            placeholder="メッセージを入力..." 
-                            rows="1"
-                        ></textarea>
-                    </div>
-                    <button class="send-button" id="sendButton" onclick="sendMessage()">
-                        <span>送信</span>
-                        <span>→</span>
-                    </button>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>高速レスポンス</h3>
+                    <p>Ollamaの最適化されたモデルにより、快適な会話体験を提供します</p>
                 </div>
-                <div class="voice-controls" id="voiceControls">
-                    <button class="mic-button" id="micButton" onclick="toggleRecording()">
-                        <span style="font-size: 2rem;">🎙️</span>
-                    </button>
-                    <div class="voice-status" id="voiceStatus">クリックして話し始める</div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>美しいUI</h3>
+                    <p>直感的で使いやすい、モダンなユーザーインターフェース</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>多言語対応</h3>
+                    <p>日本語をはじめ、様々な言語でのAIとの対話をサポート</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎤</div>
+                    <h3>音声対応</h3>
+                    <p>音声認識と音声合成による、ハンズフリーな会話体験</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>カスタマイズ可能</h3>
+                    <p>様々なAIモデルとパラメータの調整で、お好みの設定に</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Settings Modal -->
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>設定</h2>
-                <button class="modal-close" onclick="closeSettings()">×</button>
-            </div>
-            <div class="settings-group">
-                <label>モデル</label>
-                <select id="modelSelect"></select>
-            </div>
-            <div class="settings-group">
-                <label>最大トークン数</label>
-                <input type="number" id="maxTokens" min="10" max="8000" value="2000">
-            </div>
-            <div class="settings-group">
-                <label>温度 (Temperature)</label>
-                <input type="number" id="temperature" min="0" max="2" step="0.1" value="0.7">
-            </div>
-            <div class="settings-group">
-                <label>音声言語</label>
-                <select id="voiceLanguage">
-                    <option value="ja-JP">日本語</option>
-                    <option value="en-US">English (US)</option>
-                    <option value="en-GB">English (UK)</option>
-                    <option value="zh-CN">中文 (简体)</option>
-                    <option value="ko-KR">한국어</option>
-                </select>
-            </div>
-            <div class="settings-group">
-                <label>音声自動再生</label>
-                <select id="autoSpeak">
-                    <option value="true">有効</option>
-                    <option value="false">無効</option>
-                </select>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Wisbee. Made with ❤️ for AI enthusiasts.</p>
+            <div class="footer-links">
+                <a href="https://github.com/enablerdao/wisbee" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://github.com/enablerdao/wisbee/issues" target="_blank">
+                    <i class="fas fa-bug"></i> Report Issues
+                </a>
+                <a href="https://ollama.ai" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ollama
+                </a>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script>
-        let config = {};
-        let isProcessing = false;
-        let conversationHistory = [];
-        let isVoiceMode = false;
-        let isRecording = false;
-        let recognition = null;
-        let speechSynthesis = window.speechSynthesis;
+        // Simple fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-        // UI Event Handlers
-        document.getElementById('sidebarToggle').addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
-            if (window.innerWidth <= 768) {
-                sidebar.classList.toggle('mobile-open');
-            }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
         });
 
-        document.getElementById('voiceToggle').addEventListener('click', () => {
-            toggleVoiceMode();
-        });
-
-        document.getElementById('settingsToggle').addEventListener('click', () => {
-            document.getElementById('settingsModal').classList.add('active');
-        });
-
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
-        }
-        
-        // Load conversation history from localStorage
-        function loadConversationHistory() {
-            const saved = localStorage.getItem('ollamaConversationHistory');
-            if (saved) {
-                try {
-                    conversationHistory = JSON.parse(saved);
-                    // Display loaded messages
-                    conversationHistory.forEach(msg => {
-                        if (msg.role === 'user') {
-                            addMessage(msg.content, 'user', null, false);
-                        } else {
-                            addMessage(msg.content, 'assistant', msg.model || null, false);
-                        }
+        // Download tracking
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const platform = e.currentTarget.dataset.platform;
+                console.log(`Download started for platform: ${platform}`);
+                
+                // Optional: Add analytics tracking here
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'download', {
+                        'platform': platform,
+                        'version': 'v1.0.0'
                     });
-                } catch (e) {
-                    console.error('Failed to load conversation history:', e);
-                    conversationHistory = [];
                 }
-            }
-        }
-        
-        // Save conversation history to localStorage
-        function saveConversationHistory() {
-            try {
-                localStorage.setItem('ollamaConversationHistory', JSON.stringify(conversationHistory));
-            } catch (e) {
-                console.error('Failed to save conversation history:', e);
-            }
-        }
-
-        // Get list of downloaded models
-        async function getDownloadedModels() {
-            try {
-                const response = await fetch('http://localhost:11434/api/tags');
-                const data = await response.json();
-                return data.models ? data.models.map(m => m.name) : [];
-            } catch (error) {
-                console.error('Failed to get downloaded models:', error);
-                return [];
-            }
-        }
-
-        // Load configuration
-        async function loadConfig() {
-            try {
-                const response = await fetch('/config.json');
-                config = await response.json();
-                
-                // Get downloaded models
-                const downloadedModels = await getDownloadedModels();
-                
-                // Set UI defaults
-                document.getElementById('maxTokens').value = config.ui.defaultMaxTokens;
-                document.getElementById('temperature').value = config.ui.defaultTemperature;
-                
-                // Load models with size information
-                const modelSelect = document.getElementById('modelSelect');
-                const modelSizes = {
-                    'jaahas/qwen3-abliterated:0.6b': '~400MB',
-                    'qwen3:1.7b': '~1.1GB',
-                    'qwen3:latest': '~2.3GB',
-                    'smollm2:135m': '~92MB',
-                    'smollm2:360m': '~241MB',
-                    'smollm2:1.7b': '~1.1GB',
-                    'llama3.2:1b': '~1.3GB',
-                    'llama3.2:3b': '~2GB',
-                    'llama3.2:latest': '~2GB',
-                    'llama3.1:8b': '~4.7GB',
-                    'llama3.1:70b': '~40GB',
-                    'llama3.1:405b': '~231GB',
-                    'llama3:8b': '~4.7GB',
-                    'llama3:70b': '~40GB',
-                    'phi3:mini': '~2.3GB',
-                    'phi3:medium': '~7.9GB',
-                    'phi3.5:latest': '~2.2GB',
-                    'gemma2:2b': '~1.6GB',
-                    'gemma2:9b': '~5.5GB',
-                    'gemma2:27b': '~16GB',
-                    'gemma:2b': '~1.4GB',
-                    'gemma:7b': '~4.8GB',
-                    'gemma3:4b': '~3.3GB',
-                    'gemma3:1b': '~815MB',
-                    'llava:7b': '~4.7GB',
-                    'mistral:7b': '~4.1GB',
-                    'mistral-nemo:latest': '~7.1GB',
-                    'mixtral:8x7b': '~26GB',
-                    'mixtral:8x22b': '~84GB',
-                    'deepseek-r1:1.5b': '~992MB',
-                    'deepseek-r1:7b': '~4.7GB',
-                    'deepseek-r1:8b': '~4.7GB',
-                    'deepseek-r1:14b': '~8.9GB',
-                    'deepseek-r1:32b': '~19GB',
-                    'deepseek-r1:70b': '~41GB',
-                    'codellama:7b': '~3.8GB',
-                    'codellama:13b': '~7.4GB',
-                    'codellama:34b': '~19GB'
-                };
-                
-                config.ollama.models.forEach(model => {
-                    const option = document.createElement('option');
-                    option.value = model;
-                    const size = modelSizes[model] || '';
-                    const isDownloaded = downloadedModels.includes(model);
-                    const status = isDownloaded ? ' ✓' : ' ↓';
-                    option.textContent = size ? `${model} (${size})${status}` : `${model}${status}`;
-                    if (!isDownloaded) {
-                        option.style.color = '#a0a0a0';
-                    }
-                    if (model === config.ollama.defaultModel) {
-                        option.selected = true;
-                    }
-                    modelSelect.appendChild(option);
-                });
-                
-                // Load prompts
-                loadPrompts();
-            } catch (error) {
-                console.error('Failed to load config:', error);
-                // Use defaults
-                document.getElementById('maxTokens').value = 2000;
-                document.getElementById('temperature').value = 0.7;
-            }
-        }
-
-        function loadPrompts() {
-            const container = document.getElementById('promptCategories');
-            
-            const categoryIcons = {
-                'creative': '🎨',
-                'logic': '🧩',
-                'math': '🔢',
-                'code': '💻',
-                'japanese': '🌸',
-                'practical': '💡',
-                'science': '🔬',
-                'philosophy': '🤔'
-            };
-            
-            Object.entries(config.prompts).forEach(([category, prompts]) => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'prompt-category';
-                
-                const headerDiv = document.createElement('div');
-                headerDiv.className = 'category-header';
-                headerDiv.innerHTML = `
-                    <span>${categoryIcons[category] || '📝'}</span>
-                    <span>${category.charAt(0).toUpperCase() + category.slice(1)}</span>
-                `;
-                
-                categoryDiv.appendChild(headerDiv);
-                
-                prompts.forEach(prompt => {
-                    const promptDiv = document.createElement('div');
-                    promptDiv.className = 'prompt-item';
-                    promptDiv.textContent = prompt.label;
-                    promptDiv.onclick = () => usePrompt(prompt.prompt);
-                    categoryDiv.appendChild(promptDiv);
-                });
-                
-                container.appendChild(categoryDiv);
             });
-        }
-
-        function toggleVoiceMode() {
-            isVoiceMode = !isVoiceMode;
-            const voiceToggle = document.getElementById('voiceToggle');
-            const inputContainer = document.getElementById('inputContainer');
-            const textInputWrapper = document.getElementById('textInputWrapper');
-            const voiceControls = document.getElementById('voiceControls');
-            
-            if (isVoiceMode) {
-                voiceToggle.classList.add('active');
-                inputContainer.classList.add('voice-mode');
-                textInputWrapper.style.display = 'none';
-                voiceControls.classList.add('active');
-                initSpeechRecognition();
-            } else {
-                voiceToggle.classList.remove('active');
-                inputContainer.classList.remove('voice-mode');
-                textInputWrapper.style.display = 'flex';
-                voiceControls.classList.remove('active');
-                if (isRecording) {
-                    stopRecording();
-                }
-            }
-        }
-
-        // Speech Recognition
-        function initSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-                document.getElementById('voiceStatus').textContent = '音声認識に対応していません';
-                return;
-            }
-            
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = document.getElementById('voiceLanguage').value;
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            
-            recognition.onresult = (event) => {
-                let finalTranscript = '';
-                let interimTranscript = '';
-                
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    if (event.results[i].isFinal) {
-                        finalTranscript += transcript;
-                    } else {
-                        interimTranscript = transcript;
-                    }
-                }
-                
-                if (interimTranscript) {
-                    document.getElementById('voiceStatus').textContent = `認識中: ${interimTranscript}`;
-                }
-                
-                if (finalTranscript) {
-                    sendVoiceMessage(finalTranscript);
-                }
-            };
-            
-            recognition.onerror = (event) => {
-                console.error('Recognition error:', event.error);
-                document.getElementById('voiceStatus').textContent = 'エラーが発生しました';
-                stopRecording();
-            };
-            
-            recognition.onend = () => {
-                if (isRecording) {
-                    recognition.start();
-                }
-            };
-        }
-
-        function toggleRecording() {
-            if (isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
-        }
-
-        function startRecording() {
-            isRecording = true;
-            const micButton = document.getElementById('micButton');
-            const voiceIndicator = document.getElementById('voiceIndicator');
-            
-            micButton.classList.add('recording');
-            voiceIndicator.classList.add('active');
-            document.getElementById('voiceStatus').textContent = '聞いています...';
-            
-            if (recognition) {
-                recognition.lang = document.getElementById('voiceLanguage').value;
-                recognition.start();
-            }
-            
-            // Animate voice bars
-            animateVoiceBars();
-        }
-
-        function stopRecording() {
-            isRecording = false;
-            const micButton = document.getElementById('micButton');
-            const voiceIndicator = document.getElementById('voiceIndicator');
-            
-            micButton.classList.remove('recording');
-            voiceIndicator.classList.remove('active');
-            document.getElementById('voiceStatus').textContent = 'クリックして話し始める';
-            
-            if (recognition) {
-                recognition.stop();
-            }
-        }
-
-        function animateVoiceBars() {
-            if (!isRecording) return;
-            
-            const bars = document.querySelectorAll('.voice-bar');
-            bars.forEach(bar => {
-                const height = Math.random() * 30 + 10;
-                bar.style.height = `${height}px`;
-            });
-            
-            requestAnimationFrame(animateVoiceBars);
-        }
-
-        function sendVoiceMessage(text) {
-            addMessage(text, 'user', null, true);
-            processMessage(text);
-        }
-
-        // Text to Speech
-        function speak(text) {
-            if (document.getElementById('autoSpeak').value !== 'true') return;
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            const lang = document.getElementById('voiceLanguage').value;
-            utterance.lang = lang;
-            
-            // Get available voices and select appropriate one
-            const voices = speechSynthesis.getVoices();
-            const voice = voices.find(v => v.lang === lang) || voices[0];
-            if (voice) {
-                utterance.voice = voice;
-            }
-            
-            speechSynthesis.speak(utterance);
-        }
-
-        function adjustTextareaHeight() {
-            const textarea = document.getElementById('promptInput');
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-        }
-
-        document.getElementById('promptInput').addEventListener('input', adjustTextareaHeight);
-        document.getElementById('promptInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
         });
-
-        function addMessage(content, role = 'assistant', model = null, saveHistory = true) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}-message`;
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'message-avatar';
-            avatarDiv.textContent = role === 'user' ? 'U' : 'AI';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'message-header';
-            
-            const roleDiv = document.createElement('div');
-            roleDiv.className = 'message-role';
-            roleDiv.textContent = role === 'user' ? 'あなた' : 'アシスタント';
-            headerDiv.appendChild(roleDiv);
-            
-            if (model) {
-                const modelDiv = document.createElement('div');
-                modelDiv.className = 'message-model';
-                modelDiv.textContent = model;
-                headerDiv.appendChild(modelDiv);
-            }
-            
-            const textDiv = document.createElement('div');
-            textDiv.className = 'message-text';
-            textDiv.textContent = content;
-            
-            contentDiv.appendChild(headerDiv);
-            contentDiv.appendChild(textDiv);
-            
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(contentDiv);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            
-            // Save to conversation history if requested
-            if (saveHistory && content) {
-                conversationHistory.push({ 
-                    role: role, 
-                    content: content,
-                    model: model
-                });
-                saveConversationHistory();
-            }
-            
-            return textDiv;
-        }
-
-        function addTypingIndicator() {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message assistant-message';
-            messageDiv.id = 'typing-indicator';
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'message-avatar';
-            avatarDiv.textContent = 'AI';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'typing-indicator';
-            typingDiv.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            `;
-            
-            contentDiv.appendChild(typingDiv);
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(contentDiv);
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const indicator = document.getElementById('typing-indicator');
-            if (indicator) {
-                indicator.remove();
-            }
-        }
-
-        async function sendMessage() {
-            if (isProcessing) return;
-            
-            const promptInput = document.getElementById('promptInput');
-            const prompt = promptInput.value.trim();
-            if (!prompt) return;
-            
-            promptInput.value = '';
-            adjustTextareaHeight();
-            
-            addMessage(prompt, 'user', null, true);
-            processMessage(prompt);
-        }
-
-        async function processMessage(prompt) {
-            isProcessing = true;
-            document.getElementById('sendButton').disabled = true;
-            
-            const model = document.getElementById('modelSelect').value;
-            removeTypingIndicator();
-            const messageContent = addMessage('', 'assistant', model, false);
-            
-            try {
-                const maxTokens = parseInt(document.getElementById('maxTokens').value);
-                const temperature = parseFloat(document.getElementById('temperature').value);
-                
-                // Build context prompt with conversation history
-                let contextPrompt = '';
-                if (conversationHistory.length > 1) {
-                    contextPrompt = conversationHistory.slice(-10).map(msg => 
-                        `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
-                    ).join('\n\n') + '\n\n';
-                } else {
-                    contextPrompt = prompt;
-                }
-                
-                const response = await fetch('/api/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        model: model,
-                        prompt: contextPrompt,
-                        stream: true,
-                        options: {
-                            temperature: temperature,
-                            num_predict: maxTokens
-                        }
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let fullResponse = '';
-                
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-                    
-                    for (const line of lines) {
-                        if (line.trim()) {
-                            try {
-                                const data = JSON.parse(line);
-                                if (data.response) {
-                                    fullResponse += data.response;
-                                    messageContent.textContent = fullResponse;
-                                    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-                                }
-                            } catch (e) {
-                                console.error('Error parsing JSON:', e);
-                            }
-                        }
-                    }
-                }
-                
-                // Update message content and save to history
-                if (fullResponse) {
-                    messageContent.textContent = fullResponse;
-                    conversationHistory.push({ role: 'assistant', content: fullResponse, model: model });
-                    saveConversationHistory();
-                    if (isVoiceMode) {
-                        speak(fullResponse);
-                    }
-                }
-            } catch (error) {
-                messageContent.textContent = 'エラー: ' + error.message;
-            } finally {
-                isProcessing = false;
-                document.getElementById('sendButton').disabled = false;
-                document.getElementById('promptInput').focus();
-            }
-        }
-
-        function usePrompt(prompt) {
-            if (isVoiceMode) {
-                sendVoiceMessage(prompt);
-            } else {
-                document.getElementById('promptInput').value = prompt;
-                adjustTextareaHeight();
-                document.getElementById('promptInput').focus();
-            }
-        }
-
-        function clearChat() {
-            document.getElementById('messages').innerHTML = '';
-            conversationHistory = [];
-            localStorage.removeItem('ollamaConversationHistory');
-        }
-
-        // Refresh model list periodically
-        async function refreshModelList() {
-            const modelSelect = document.getElementById('modelSelect');
-            const currentValue = modelSelect.value;
-            const downloadedModels = await getDownloadedModels();
-            
-            // Clear and rebuild options
-            modelSelect.innerHTML = '';
-            
-            const modelSizes = {
-                'jaahas/qwen3-abliterated:0.6b': '~400MB',
-                'qwen3:1.7b': '~1.1GB',
-                'qwen3:latest': '~2.3GB',
-                'smollm2:135m': '~92MB',
-                'smollm2:360m': '~241MB',
-                'smollm2:1.7b': '~1.1GB',
-                'llama3.2:1b': '~1.3GB',
-                'llama3.2:3b': '~2GB',
-                'llama3.2:latest': '~2GB',
-                'llama3.1:8b': '~4.7GB',
-                'llama3.1:70b': '~40GB',
-                'llama3.1:405b': '~231GB',
-                'llama3:8b': '~4.7GB',
-                'llama3:70b': '~40GB',
-                'phi3:mini': '~2.3GB',
-                'phi3:medium': '~7.9GB',
-                'phi3.5:latest': '~2.2GB',
-                'gemma2:2b': '~1.6GB',
-                'gemma2:9b': '~5.5GB',
-                'gemma2:27b': '~16GB',
-                'gemma:2b': '~1.4GB',
-                'gemma:7b': '~4.8GB',
-                'gemma3:4b': '~3.3GB',
-                'gemma3:1b': '~815MB',
-                'llava:7b': '~4.7GB',
-                'mistral:7b': '~4.1GB',
-                'mistral-nemo:latest': '~7.1GB',
-                'mixtral:8x7b': '~26GB',
-                'mixtral:8x22b': '~84GB',
-                'deepseek-r1:1.5b': '~992MB',
-                'deepseek-r1:7b': '~4.7GB',
-                'deepseek-r1:8b': '~4.7GB',
-                'deepseek-r1:14b': '~8.9GB',
-                'deepseek-r1:32b': '~19GB',
-                'deepseek-r1:70b': '~41GB',
-                'codellama:7b': '~3.8GB',
-                'codellama:13b': '~7.4GB',
-                'codellama:34b': '~19GB'
-            };
-            
-            config.ollama.models.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model;
-                const size = modelSizes[model] || '';
-                const isDownloaded = downloadedModels.includes(model);
-                const status = isDownloaded ? ' ✓' : ' ↓';
-                option.textContent = size ? `${model} (${size})${status}` : `${model}${status}`;
-                if (!isDownloaded) {
-                    option.style.color = '#a0a0a0';
-                }
-                if (model === currentValue) {
-                    option.selected = true;
-                }
-                modelSelect.appendChild(option);
-            });
-        }
-
-        // Initialize
-        loadConfig().then(() => {
-            loadConversationHistory();
-        });
-        
-        // Refresh model list every 10 seconds
-        setInterval(refreshModelList, 10000);
-        
-        // Load voices when available
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = () => {
-                // Voices loaded
-            };
-        }
     </script>
 </body>
 </html>
