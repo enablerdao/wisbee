@@ -1,0 +1,48 @@
+{
+  "name": "Wisbee - ローカルAIチャットアプリ",
+  "short_name": "Wisbee",
+  "description": "プライバシーを保護しながら、OllamaでローカルAIとチャット",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "ja",
+  "categories": ["productivity", "utilities", "developer"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/assets/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/demo.gif",
+      "sizes": "1280x720",
+      "type": "image/gif",
+      "form_factor": "wide"
+    }
+  ],
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "macos",
+      "url": "https://github.com/enablerdao/wisbee/releases/download/v1.0.0/Wisbee-1.0.0-arm64.dmg",
+      "id": "ai.wisbee.app"
+    }
+  ]
+}

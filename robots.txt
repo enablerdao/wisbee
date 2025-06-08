@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://wisbee.ai/sitemap.xml
+
+# Block sensitive files
+Disallow: /api/
+Disallow: /.vercel/
+Disallow: /.git/
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /*.log
+Disallow: /*test*
+Disallow: /*benchmark*
+
+# Allow important pages
+Allow: /
+Allow: /chat
+Allow: /download
+Allow: /assets/
+
+# Crawl delay (be nice to servers)
+Crawl-delay: 1

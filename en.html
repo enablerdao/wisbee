@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee - Local AI Chat App | Privacy-Focused Ollama Client</title>
+    <meta name="description" content="Wisbee is a local AI chat application using Ollama. Chat with high-performance AI models while protecting your privacy. macOS support with voice features.">
+    <link rel="canonical" href="https://wisbee.ai/en">
+    <link rel="alternate" hreflang="ja" href="https://wisbee.ai/">
+    <link rel="alternate" hreflang="en" href="https://wisbee.ai/en">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 600px;
+        }
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #f59e0b, #dc8a0a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #2a2a2a;
+            color: var(--text-primary);
+        }
+        .lang-switch {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+        }
+        .lang-switch a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem;
+        }
+        .lang-switch a:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <a href="/">🇯🇵 日本語</a>
+    </div>
+    
+    <div class="container">
+        <div class="hero-icon">🐝</div>
+        <h1>Wisbee</h1>
+        <p class="subtitle">Natural AI Conversations, Locally</p>
+        <p class="description">
+            Wisbee is a local AI chat application using Ollama. 
+            Enjoy natural conversations with high-performance AI models while protecting your privacy.
+        </p>
+        
+        <div class="actions">
+            <a href="https://github.com/enablerdao/wisbee/releases/download/v1.0.0/Wisbee-1.0.0-arm64.dmg" class="btn">
+                <i class="fab fa-apple"></i>
+                Download for macOS
+            </a>
+            <a href="/chat" class="btn btn-secondary">
+                <i class="fas fa-play"></i>
+                Try Demo
+            </a>
+        </div>
+        
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+            macOS 11.0+ | Apple Silicon & Intel supported
+        </p>
+    </div>
+
+    <script>
+        if (typeof va !== 'undefined') {
+            va.track('PageView', { page: 'english', language: 'en' });
+        }
+    </script>
+</body>
+</html>
