@@ -102,6 +102,39 @@
 
 ## 🎯 使い方
 
+### 🚀 確実な起動方法
+
+**推奨**: 専用の起動スクリプトを使用（ポート競合を自動解決）
+```bash
+cd /Users/yuki/bench-llm/wisbee-mac
+./start-wisbee.sh
+```
+
+**手動起動**:
+```bash
+cd /Users/yuki/bench-llm/wisbee-mac
+# 既存プロセスの停止
+pkill -f electron; pkill -f ollama-webui-server; lsof -ti:8899 | xargs kill -9
+# アプリ起動
+npm start
+```
+
+### アプリへのアクセス
+- **固定ポート**: `8899` （競合しないよう調整済み）
+- **メインチャット**: http://localhost:8899
+- **ダウンロードページ**: http://localhost:8899/download
+
+### 新機能
+- 🐝 美しいWisbeeデザイン - アニメーション効果付きの洗練されたUI
+- ChatGPTより安全・無料・オープンなAI
+- グラデーション効果とホバーアニメーション
+- 日本語に最適化されたインターフェース
+
+### ⚠️ 起動時の注意点
+1. **ポート8899**が他のアプリで使用されていないか確認
+2. **Ollama**（ポート11434）が事前に起動していることを確認
+3. 起動に失敗する場合は`start-wisbee.sh`を使用
+
 ### 基本的な使い方
 1. テキストボックスにメッセージを入力
 2. EnterキーまたはSendボタンで送信
@@ -189,9 +222,67 @@ ollama serve
 ~/.ollama/logs/
 ```
 
+## 🤖 自動化とCI/CD
+
+Wisbeeは完全自動化されたテストとデプロイメントパイプラインを備えています：
+
+### 🔄 GitHub Actions CI/CD
+- **自動テスト**: すべてのPRで品質チェック、ユニットテスト、E2Eテストを実行
+- **クロスプラットフォームビルド**: Windows、macOS、Linux用バイナリを自動生成
+- **自動リリース**: タグプッシュで自動的にGitHub Releasesにデプロイ
+- **パフォーマンス監視**: 応答速度とメモリ使用量を継続的に監視
+
+### 🧪 テストスイート
+```bash
+# 全テスト実行
+npm test
+
+# E2Eテスト（Playwright）
+npm run test:e2e
+
+# パフォーマンステスト
+npm run test:performance
+
+# コードカバレッジ
+npm run test:coverage
+```
+
+### 📊 品質チェック
+```bash
+# ESLint
+npm run lint
+
+# Prettier
+npm run format
+
+# セキュリティ監査
+npm audit
+```
+
+### 🚀 自動デプロイ
+1. コードをmainブランチにプッシュ
+2. 自動テストが全て成功
+3. タグを作成すると自動的にリリース
+4. バイナリファイルがGitHub Releasesに公開
+
 ## 🤝 コントリビューション
 
 Wisbeeはオープンソースプロジェクトです。改善提案やバグ報告は大歓迎です！
+
+### 開発環境のセットアップ
+```bash
+git clone https://github.com/enablerdao/wisbee.git
+cd wisbee/wisbee-mac
+npm install
+npm start
+```
+
+### プルリクエストの流れ
+1. フォークして機能ブランチを作成
+2. 変更を実装（自動テストが通ることを確認）
+3. プルリクエストを作成
+4. 自動的にCI/CDパイプラインが実行
+5. すべてのチェックが通過後、自動マージ（依存関係更新の場合）
 
 - **バグ報告**: [Issues](https://github.com/enablerdao/wisbee/issues)
 - **機能リクエスト**: [Discussions](https://github.com/enablerdao/wisbee/discussions)

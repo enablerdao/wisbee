@@ -6,9 +6,25 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "electron test-basic.js",
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:integration": "jest --testPathPattern=tests/integration",
+    "test:visual": "playwright test tests/visual",
+    "test:accessibility": "playwright test tests/accessibility",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:coverage": "jest --coverage",
+    "test:performance": "node tests/performance/benchmark.js",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "pack": "electron-builder --dir",
     "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "package": "npm run build",
     "dist": "electron-builder",
     "dist-mac": "electron-builder --mac",
     "dist-win": "electron-builder --win",
@@ -16,9 +32,18 @@
     "dist-all": "electron-builder -mwl",
     "dist-dmg": "electron-builder --mac dmg",
     "dist-mas": "electron-builder --mac mas",
+    "report:performance": "node scripts/generate-performance-report.js",
+    "build:docs": "node scripts/build-docs.js",
     "postinstall": "electron-builder install-app-deps"
   },
-  "keywords": ["ollama", "ai", "chat", "llm", "model-manager", "wisbee"],
+  "keywords": [
+    "ollama",
+    "ai",
+    "chat",
+    "llm",
+    "model-manager",
+    "wisbee"
+  ],
   "author": "EnablerDAO",
   "license": "MIT",
   "repository": {
@@ -26,8 +51,16 @@
     "url": "https://github.com/enablerdao/wisbee.git"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.40.0",
+    "@types/jest": "^29.5.8",
+    "axios": "^1.9.0",
     "electron": "^28.0.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.55.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.1.0"
   },
   "build": {
     "appId": "com.enablerdao.wisbee",
@@ -46,11 +79,17 @@
       "target": [
         {
           "target": "mas",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ]
     },
@@ -79,11 +118,17 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
       "icon": "assets/icon.ico"
@@ -99,15 +144,24 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "category": "Development",
@@ -127,7 +181,11 @@
       {
         "from": "../",
         "to": "app",
-        "filter": ["index.html", "config.json", "ollama-webui-server.py"]
+        "filter": [
+          "index.html",
+          "config.json",
+          "ollama-webui-server.py"
+        ]
       }
     ]
   }

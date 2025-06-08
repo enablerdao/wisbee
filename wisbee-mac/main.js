@@ -126,11 +126,14 @@ function createWindow() {
   // Create menu
   createMenu();
 
-  // Wait for server to start before loading
-  setTimeout(() => {
-    mainWindow.loadURL('http://localhost:8899');
-    mainWindow.show();
-  }, 3000);
+  // Clear cache before loading
+  mainWindow.webContents.session.clearCache().then(() => {
+    // Wait for server to start before loading
+    setTimeout(() => {
+      mainWindow.loadURL('http://localhost:8899');
+      mainWindow.show();
+    }, 3000);
+  });
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {
@@ -192,7 +195,11 @@ function createMenu() {
     {
       label: 'View',
       submenu: [
-        { label: 'Reload', accelerator: 'Cmd+R', click: () => mainWindow.reload() },
+        { label: 'Reload', accelerator: 'Cmd+R', click: () => {
+          mainWindow.webContents.session.clearCache().then(() => {
+            mainWindow.reload();
+          });
+        }},
         { label: 'Toggle Developer Tools', accelerator: 'Option+Cmd+I', click: () => mainWindow.webContents.toggleDevTools() },
         { type: 'separator' },
         { label: 'Actual Size', accelerator: 'Cmd+0', role: 'resetZoom' },

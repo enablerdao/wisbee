@@ -22,24 +22,73 @@ class OllamaProxyHandler(SimpleHTTPRequestHandler):
         self.end_headers()
     
     def do_GET(self):
-        if self.path == '/api/tags':
+        # Handle download page
+        if self.path == '/download' or self.path == '/download/':
+            download_path = os.path.join(os.path.dirname(__file__), '..', 'wisbee-github-io', 'index.html')
+            if os.path.exists(download_path):
+                try:
+                    with open(download_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/html; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(content.encode('utf-8'))
+                    return
+                except Exception as e:
+                    self.send_response(500)
+                    self.end_headers()
+                    self.wfile.write(f"Error loading download page: {str(e)}".encode())
+                    return
+            else:
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(b"Download page not found")
+                return
+        
+        # Handle API tags
+        elif self.path == '/api/tags':
             try:
-                # Forward request to Ollama
                 response = requests.get('http://localhost:11434/api/tags')
-                
                 self.send_response(response.status_code)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 self.wfile.write(response.content)
+                return
             except Exception as e:
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
                 error_response = json.dumps({'error': str(e)})
                 self.wfile.write(error_response.encode())
-        else:
-            # Default GET handler for serving files
-            super().do_GET()
+                return
+        
+        # Handle root path
+        elif self.path == '/':
+            self.path = '/chat.html'
+        
+        # Handle config.json
+        elif self.path == '/config.json':
+            if os.path.exists('config.json'):
+                self.path = '/config.json'
+            else:
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                default_config = {
+                    "ollama": {
+                        "defaultModel": "qwen3:latest",
+                        "models": ["qwen3:latest", "llama3.2:1b", "phi3:mini", "gemma3:4b", "gemma3:1b"]
+                    },
+                    "ui": {
+                        "defaultMaxTokens": 2000,
+                        "defaultTemperature": 0.7
+                    }
+                }
+                self.wfile.write(json.dumps(default_config).encode())
+                return
+        
+        # Default file handler
+        super().do_GET()
     
     def do_POST(self):
         if self.path == '/api/generate':
@@ -86,30 +135,6 @@ class OllamaProxyHandler(SimpleHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-    def do_GET(self):
-        if self.path == '/':
-            self.path = '/index.html'
-        elif self.path == '/config.json':
-            # Load config file if exists, otherwise use default
-            if os.path.exists('config.json'):
-                self.path = '/config.json'
-            else:
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                default_config = {
-                    "ollama": {
-                        "defaultModel": "qwen3:latest",
-                        "models": ["qwen3:latest", "llama3.2:1b", "phi3:mini", "gemma3:4b", "gemma3:1b"]
-                    },
-                    "ui": {
-                        "defaultMaxTokens": 2000,
-                        "defaultTemperature": 0.7
-                    }
-                }
-                self.wfile.write(json.dumps(default_config).encode())
-                return
-        return super().do_GET()
 
 def run_server(port=8080):
     server_address = ('', port)

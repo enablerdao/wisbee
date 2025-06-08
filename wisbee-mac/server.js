@@ -44,7 +44,7 @@ const server = http.createServer((req, res) => {
     }
 
     // Serve static files
-    let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
+    const filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
     
     fs.access(filePath, fs.constants.F_OK, (err) => {
         if (err) {

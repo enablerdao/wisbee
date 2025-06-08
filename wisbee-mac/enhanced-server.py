@@ -25,6 +25,14 @@ class EnhancedOllamaHandler(SimpleHTTPRequestHandler):
         if self.path.startswith('/api/'):
             self.proxy_to_ollama()
         else:
+            # Route specific pages
+            if self.path == '/' or self.path == '/chat':
+                self.path = '/chat.html'
+            elif self.path == '/download':
+                self.path = '/download.html'
+            elif self.path == '/index':
+                self.path = '/index.html'
+            
             # Default GET handler for serving files
             super().do_GET()
     
