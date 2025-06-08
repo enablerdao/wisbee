@@ -95,7 +95,20 @@ class OllamaProxyHandler(SimpleHTTPRequestHandler):
         elif self.path == '/download' or self.path == '/download/':
             # Serve download page from wisbee directory
             if os.path.exists('wisbee/download.html'):
-                self.path = '/wisbee/download.html'
+                try:
+                    with open('wisbee/download.html', 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/html; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write(content.encode('utf-8'))
+                    return
+                except Exception as e:
+                    self.send_response(500)
+                    self.send_header('Content-Type', 'text/html')
+                    self.end_headers()
+                    self.wfile.write(f"<h1>Error loading download page: {e}</h1>".encode())
+                    return
             else:
                 self.send_response(404)
                 self.send_header('Content-Type', 'text/html')
