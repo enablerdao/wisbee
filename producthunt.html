@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee - Free, Private, Local AI Chat | Product Hunt</title>
+    <meta name="description" content="ChatGPT alternative that's 100% free, 2-5x faster, completely private. No monthly fees, no data collection, works offline.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 6rem;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            margin-bottom: 3rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: #7c3aed;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+        
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #7c3aed;
+        }
+        
+        .comparison {
+            background: rgba(20, 20, 20, 0.8);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .comparison-header {
+            font-weight: 600;
+            color: #7c3aed;
+            padding: 1rem;
+            border-bottom: 2px solid #7c3aed;
+        }
+        
+        .comparison-cell {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .check { color: #10b981; }
+        .cross { color: #ef4444; }
+        
+        .cta-section {
+            margin: 4rem 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            padding: 1.25rem 3rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin: 3rem 0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #7c3aed;
+        }
+        
+        .stat-label {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        
+        .testimonial {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            font-style: italic;
+        }
+        
+        .badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .stats { flex-direction: column; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <div class="logo">🐝</div>
+            <h1>Wisbee</h1>
+            <p class="tagline">The ChatGPT Alternative That Respects Your Privacy</p>
+            
+            <div class="badges">
+                <span class="badge">🆓 100% Free Forever</span>
+                <span class="badge">🔒 Complete Privacy</span>
+                <span class="badge">⚡ 2-5x Faster</span>
+                <span class="badge">📱 Works Offline</span>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">$0</div>
+                    <div class="stat-label">Monthly Cost</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Tokens/Second</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Local Processing</div>
+                </div>
+            </div>
+            
+            <div class="comparison">
+                <h2>Why Choose Wisbee?</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-header">Feature</div>
+                    <div class="comparison-header">Wisbee</div>
+                    <div class="comparison-header">ChatGPT Plus</div>
+                    
+                    <div class="comparison-cell">Monthly Cost</div>
+                    <div class="comparison-cell check">✓ Free</div>
+                    <div class="comparison-cell cross">✗ $20/month</div>
+                    
+                    <div class="comparison-cell">Privacy</div>
+                    <div class="comparison-cell check">✓ 100% Local</div>
+                    <div class="comparison-cell cross">✗ Cloud-based</div>
+                    
+                    <div class="comparison-cell">Speed</div>
+                    <div class="comparison-cell check">✓ 150+ tokens/sec</div>
+                    <div class="comparison-cell cross">✗ 30-50 tokens/sec</div>
+                    
+                    <div class="comparison-cell">Usage Limits</div>
+                    <div class="comparison-cell check">✓ Unlimited</div>
+                    <div class="comparison-cell cross">✗ 40 messages/3hr</div>
+                    
+                    <div class="comparison-cell">Offline Mode</div>
+                    <div class="comparison-cell check">✓ Full Support</div>
+                    <div class="comparison-cell cross">✗ Not Available</div>
+                    
+                    <div class="comparison-cell">Data Collection</div>
+                    <div class="comparison-cell check">✓ None</div>
+                    <div class="comparison-cell cross">✗ Extensive</div>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>🏃 Blazing Fast</h3>
+                    <p>2-5x faster than ChatGPT because everything runs locally. No network latency, instant responses.</p>
+                </div>
+                <div class="feature">
+                    <h3>🔐 True Privacy</h3>
+                    <p>Your conversations never leave your device. No data collection, no tracking, no surveillance.</p>
+                </div>
+                <div class="feature">
+                    <h3>💾 Multiple Models</h3>
+                    <p>Choose from Llama 3.2, Qwen 2.5, Gemma 2, and more. Switch models based on your needs.</p>
+                </div>
+            </div>
+            
+            <div class="testimonial">
+                "I was paying $20/month for ChatGPT Plus. Wisbee gives me the same quality responses, but faster and for free. It's a no-brainer."
+                <br><strong>- Beta Tester, Software Developer</strong>
+            </div>
+            
+            <div class="cta-section">
+                <a href="https://wisbee.github.io" class="cta-button">
+                    Download Wisbee Now →
+                </a>
+                <p style="margin-top: 1rem; color: #a0a0a0;">
+                    Available for macOS, Windows, and Linux
+                </p>
+            </div>
+            
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <p style="color: #666;">
+                    Made with 🐝 by the open-source community
+                    <br>
+                    <a href="https://github.com/enablerdao/wisbee" style="color: #7c3aed;">GitHub</a> | 
+                    <a href="https://twitter.com/enablerdao" style="color: #7c3aed;">Twitter</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

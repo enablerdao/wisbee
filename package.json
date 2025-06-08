@@ -1,0 +1,26 @@
+{
+  "name": "wisbee-website",
+  "version": "1.0.0",
+  "description": "Wisbee - ChatGPTより安全・無料・オープンなAI",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "dev": "python3 -m http.server 3000",
+    "vercel-deploy": "vercel --prod"
+  },
+  "keywords": [
+    "ai",
+    "chatgpt", 
+    "ollama",
+    "privacy",
+    "local",
+    "opensource"
+  ],
+  "author": "enablerdao",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enablerdao/wisbee"
+  },
+  "homepage": "https://wisbee.github.io"
+}

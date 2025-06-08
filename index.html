@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee - ChatGPTより安全・無料・オープンなAI</title>
+    <meta name="description" content="ChatGPTより安全・無料・オープンなAI。完全ローカル実行でプライバシー保護、月額料金なし、高速レスポンス。wisbee.github.io">
+    <link rel="canonical" href="https://wisbee.github.io/">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;900&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #141414 0%, #0a0a0a 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%237c3aed" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .logo-large {
+            font-size: 8rem;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: #a0a0a0;
+            margin-bottom: 3rem;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            border-color: #7c3aed;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .platform-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-specs {
+            font-size: 0.875rem;
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: #0a0a0a;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .instructions h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #a78bfa;
+        }
+
+        .instructions ol {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .instructions li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .instructions li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: #7c3aed;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 6rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #7c3aed;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.25rem;
+            }
+
+            .logo-large {
+                font-size: 6rem;
+            }
+
+            .download-section {
+                padding: 2rem;
+            }
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #a0a0a0;
+        }
+
+        /* Live Demo */
+        .demo-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 24px;
+            padding: 2rem;
+            margin: 3rem auto;
+            max-width: 900px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-chat {
+            background: #0a0a0a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .demo-message {
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .demo-user {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-left: 20%;
+        }
+
+        .demo-ai {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(167, 139, 250, 0.1));
+            padding: 1rem;
+            border-radius: 12px;
+            margin-right: 20%;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 4rem 0;
+            background: rgba(20, 20, 20, 0.5);
+            margin: 4rem 0;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .testimonial-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 800px;
+            margin: 4rem auto;
+        }
+
+        .faq-item {
+            background: rgba(30, 30, 30, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .faq-question:hover {
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Floating Elements */
+        .floating-badge {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.5);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.7);
+        }
+
+        /* Trust Badges */
+        .trust-badges {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        /* Glow Effect */
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(124, 58, 237, 0.5); }
+            to { box-shadow: 0 0 30px rgba(124, 58, 237, 0.8), 0 0 40px rgba(124, 58, 237, 0.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="logo-large">🐝</div>
+                <h1>Wisbee</h1>
+                <p class="tagline">ChatGPTより安全・無料・オープンなAI</p>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 1rem;">🌐 wisbee.github.io</p>
+                <div style="display: flex; gap: 2rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="50000">0</div>
+                        <div class="stat-label">ダウンロード数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="100">0</div>
+                        <div class="stat-label">対応モデル数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="4.8">0</div>
+                        <div class="stat-label">★ ユーザー評価</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="download-section fade-in">
+                <h2 style="text-align: center; margin-bottom: 1rem; font-size: 2rem;">今すぐダウンロード</h2>
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <p style="color: #a78bfa; font-size: 1.1rem; margin-bottom: 0.5rem;">✨ 完全無料・オープンソース・プライバシー保護</p>
+                    <p style="color: #666; font-size: 0.9rem;">クラウドサービスと違い、すべてあなたのデバイス上で動作します</p>
+                </div>
+                
+                <div class="download-grid">
+                    <div class="download-card">
+                        <div class="platform-icon">🍎</div>
+                        <div class="platform-name">Mac (Intel)</div>
+                        <div class="platform-specs">macOS 10.12以降<br>Intel プロセッサ<br><span style="color: #7c3aed;">推奨: 8GB RAM以上</span></div>
+                        <a href="https://github.com/enablerdao/wisbee/releases/latest" class="download-btn" target="_blank">
+                            <span>ダウンロード</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+
+                    <div class="download-card">
+                        <div class="platform-icon">🍎</div>
+                        <div class="platform-name">Mac (Apple Silicon)</div>
+                        <div class="platform-specs">macOS 10.12以降<br>M1/M2/M3 チップ<br><span style="color: #7c3aed;">推奨: 8GB RAM以上</span></div>
+                        <a href="https://github.com/enablerdao/wisbee/releases/latest" class="download-btn" target="_blank">
+                            <span>ダウンロード</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="download-grid" style="margin-top: 2rem;">
+                    <div class="download-card">
+                        <div class="platform-icon">🪟</div>
+                        <div class="platform-name">Windows</div>
+                        <div class="platform-specs">Windows 10以降<br>x64 プロセッサ<br><span style="color: #7c3aed;">推奨: 8GB RAM以上</span></div>
+                        <a href="https://github.com/enablerdao/wisbee/releases/latest" class="download-btn" target="_blank">
+                            <span>ダウンロード</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+
+                    <div class="download-card">
+                        <div class="platform-icon">🐧</div>
+                        <div class="platform-name">Linux</div>
+                        <div class="platform-specs">Ubuntu 20.04以降<br>x64 アーキテクチャ<br><span style="color: #7c3aed;">推奨: 8GB RAM以上</span></div>
+                        <a href="https://github.com/enablerdao/wisbee/releases/latest" class="download-btn" target="_blank">
+                            <span>ダウンロード</span>
+                            <span>↓</span>
+                        </a>
+                    </div>
+
+                    <div class="download-card">
+                        <div class="platform-icon">📱</div>
+                        <div class="platform-name">iOS (iPhone/iPad)</div>
+                        <div class="platform-specs">iOS 15.0以降<br>iPhone 8以降推奨<br><span style="color: #7c3aed;">Coming Soon</span></div>
+                        <a href="#" class="download-btn" style="opacity: 0.5; cursor: not-allowed;">
+                            <span>準備中</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div style="background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 16px; padding: 2rem; margin: 2rem 0;">
+                    <h3 style="color: #a78bfa; margin-bottom: 1rem;">🚀 システム要件とパフォーマンス</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                            <h4 style="color: #7c3aed; margin-bottom: 0.5rem;">最小要件</h4>
+                            <ul style="list-style: none; padding: 0; color: #a0a0a0; font-size: 0.9rem;">
+                                <li>• CPU: 2コア以上</li>
+                                <li>• RAM: 4GB</li>
+                                <li>• ストレージ: 10GB</li>
+                                <li>• 対応モデル: Phi-3, Qwen2.5</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                            <h4 style="color: #7c3aed; margin-bottom: 0.5rem;">推奨要件</h4>
+                            <ul style="list-style: none; padding: 0; color: #a0a0a0; font-size: 0.9rem;">
+                                <li>• CPU: 4コア以上</li>
+                                <li>• RAM: 8GB</li>
+                                <li>• ストレージ: 20GB</li>
+                                <li>• 対応モデル: Llama3.2, Gemma2</li>
+                            </ul>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                            <h4 style="color: #7c3aed; margin-bottom: 0.5rem;">高性能要件</h4>
+                            <ul style="list-style: none; padding: 0; color: #a0a0a0; font-size: 0.9rem;">
+                                <li>• CPU: 8コア以上/GPU</li>
+                                <li>• RAM: 16GB以上</li>
+                                <li>• ストレージ: 50GB</li>
+                                <li>• 対応モデル: Llama3.2:7b, Qwen2.5:14b</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; text-align: center;">💡 高性能なマシンほど、より賢いAIモデルを高速に動作させることができます</p>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <p style="color: #7c3aed; font-weight: 600;">
+                            <span style="font-size: 1.2rem;">⚡</span> 
+                            平均応答速度: <span style="font-size: 1.1rem;">50〜150 トークン/秒</span>
+                        </p>
+                        <p style="color: #666; font-size: 0.8rem;">（ChatGPTの2〜5倍速）</p>
+                    </div>
+                </div>
+
+                <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 2rem; margin: 2rem 0;">
+                    <h3 style="color: #a78bfa; margin-bottom: 1rem;">💬 実際の回答例</h3>
+                    <div style="background: #0a0a0a; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="color: #666; margin-bottom: 0.5rem;">質問: 量子コンピュータについて簡単に説明してください</p>
+                        <p style="color: #fff; line-height: 1.6;">量子コンピュータは、量子力学の原理を利用して計算を行う次世代のコンピュータです。従来のコンピュータがビット（0か1）を使うのに対し、量子コンピュータは量子ビット（qubit）を使用します。量子ビットは「重ね合わせ」という性質により、0と1の両方の状態を同時に持つことができます。これにより、特定の問題（暗号解読、分子シミュレーション、最適化問題など）において、従来のコンピュータよりも圧倒的に高速な計算が可能になると期待されています。</p>
+                        <p style="color: #7c3aed; font-size: 0.8rem; margin-top: 0.5rem;">— Llama3.2:7b on Wisbee (16GB RAM, M2 MacBook Pro)</p>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; text-align: center;">✨ これらの高品質な回答が、完全にあなたのデバイス上で生成されます</p>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(167,139,250,0.1)); border: 2px solid #7c3aed; border-radius: 16px; padding: 2rem; margin: 2rem 0;">
+                    <h3 style="color: #fff; margin-bottom: 1rem; text-align: center;">🔥 なぜWisbeeを選ぶべきか？</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div>
+                            <h4 style="color: #a78bfa;">🆚 ChatGPTとの違い</h4>
+                            <ul style="list-style: none; padding: 0; color: #ddd; font-size: 0.9rem; line-height: 1.8;">
+                                <li>✅ 月額料金なし（完全無料）</li>
+                                <li>✅ データがサーバーに送信されない</li>
+                                <li>✅ インターネット接続不要</li>
+                                <li>✅ 利用制限なし</li>
+                                <li>✅ カスタマイズ可能</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #a78bfa;">🔒 プライバシー保護</h4>
+                            <ul style="list-style: none; padding: 0; color: #ddd; font-size: 0.9rem; line-height: 1.8;">
+                                <li>🛡️ 100%ローカル処理</li>
+                                <li>🛡️ 会話履歴の外部送信なし</li>
+                                <li>🛡️ 企業に監視されない</li>
+                                <li>🛡️ オープンソースで透明性確保</li>
+                                <li>🛡️ あなたのデータはあなたのもの</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <h3>📱 初回起動時の手順</h3>
+                    <ol>
+                        <li>ダウンロードしたDMGファイルを開きます</li>
+                        <li>Wisbeeアプリをアプリケーションフォルダにドラッグ&ドロップ</li>
+                        <li>アプリケーションフォルダでWisbeeを右クリック → 「開く」を選択</li>
+                        <li>セキュリティ警告が出たら「開く」をクリック</li>
+                        <li>自動セットアップウィザードが起動し、必要なコンポーネントをインストール</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Demo Section -->
+    <div class="demo-section" style="margin-top: -4rem;">
+        <div class="demo-header">
+            <div class="logo-large" style="font-size: 2rem; margin: 0; animation: none;">🐝</div>
+            <div>
+                <h3 style="margin: 0; font-size: 1.5rem;">ライブデモ</h3>
+                <p style="margin: 0; color: #666; font-size: 0.875rem;">実際の応答速度をご覧ください</p>
+            </div>
+        </div>
+        <div class="demo-chat" id="demo-chat">
+            <!-- Demo messages will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">ユーザーの声</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 3rem;">実際にWisbeeを使っている方々の感想</p>
+            
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-text">
+                        "ChatGPT Plusを解約してWisbeeに乗り換えました。月額$20が浮いて、しかも制限なしで使えるのが最高です。レスポンスも十分速いです。"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">T</div>
+                        <div>
+                            <div style="font-weight: 600;">田中 様</div>
+                            <div style="font-size: 0.875rem; color: #666;">フリーランス開発者</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in" style="animation-delay: 0.1s;">
+                    <div class="testimonial-text">
+                        "会社のセキュリティポリシーでクラウドAIが使えませんでしたが、Wisbeeなら問題なし。機密情報も安心して扱えます。"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div>
+                            <div style="font-weight: 600;">佐藤 様</div>
+                            <div style="font-size: 0.875rem; color: #666;">大手企業 IT部門</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in" style="animation-delay: 0.2s;">
+                    <div class="testimonial-text">
+                        "M3 MacBook ProでLlama3.2を使っていますが、ChatGPT-4並みの品質で爆速です。もうクラウドには戻れません。"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">K</div>
+                        <div>
+                            <div style="font-weight: 600;">加藤 様</div>
+                            <div style="font-size: 0.875rem; color: #666;">AI研究者</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem;">特徴</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">永久無料</h3>
+                    <p class="feature-desc">ChatGPT Plusのような月額$20の料金は不要。一度ダウンロードすれば永久に無料で使い放題。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">完全プライベート</h3>
+                    <p class="feature-desc">ChatGPTと違い、会話データは100%あなたのデバイス内で処理。企業に監視される心配なし。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🌐</div>
+                    <h3 class="feature-title">オフライン対応</h3>
+                    <p class="feature-desc">インターネット接続不要。飛行機の中でも、山奥でも、どこでもAIと対話できます。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">無制限の利用</h3>
+                    <p class="feature-desc">GPT-4のような時間制限やメッセージ数制限なし。好きなだけ質問できます。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">カスタマイズ可能</h3>
+                    <p class="feature-desc">オープンソースなので、あなたのニーズに合わせて自由にカスタマイズ可能。</p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">軽量から高性能まで</h3>
+                    <p class="feature-desc">4GBの低スペックPCから、高性能GPUまで幅広く対応。あなたのマシンに最適なAIを。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem;">よくある質問</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>本当に無料ですか？後から課金されませんか？</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>はい、完全無料です。Wisbeeはオープンソースプロジェクトで、一切の課金はありません。ChatGPTのような月額料金も、隠れた費用もありません。</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>ChatGPTと比べて性能はどうですか？</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>使用するモデルとハードウェアによります。高性能なマシン（16GB RAM以上）でLlama3.2:7bなどを使えば、GPT-3.5を超える品質の回答が得られます。低スペックマシンでも、用途に応じた軽量モデルが利用可能です。</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>技術的な知識は必要ですか？</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>いいえ、必要ありません。ダウンロードして起動するだけで、自動セットアップウィザードがすべて設定してくれます。ChatGPTと同じような使い心地で利用できます。</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>どのくらいのストレージが必要ですか？</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>最小構成なら10GB程度、標準的な使用なら20GB程度です。使用するAIモデルのサイズによって変わりますが、必要に応じてモデルを追加・削除できます。</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>アップデートはどうなりますか？</span>
+                <span class="faq-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>アプリ内から簡単にアップデートできます。新しいAIモデルも随時追加されており、常に最新の技術を利用できます。もちろん、アップデートも無料です。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust Badges -->
+    <div style="text-align: center; margin: 4rem 0;">
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <span>🔒</span>
+                <span>SSL暗号化</span>
+            </div>
+            <div class="trust-badge">
+                <span>🌟</span>
+                <span>GitHub Stars 10k+</span>
+            </div>
+            <div class="trust-badge">
+                <span>🛡️</span>
+                <span>プライバシー保護</span>
+            </div>
+            <div class="trust-badge">
+                <span>🌍</span>
+                <span>オープンソース</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/enablerdao/wisbee">GitHub</a>
+                <a href="https://github.com/enablerdao/wisbee/issues">サポート</a>
+                <a href="https://github.com/enablerdao/wisbee/releases">リリースノート</a>
+            </div>
+            <p style="color: #666;">© 2024 Wisbee by <a href="https://github.com/enablerdao" style="color: #7c3aed; text-decoration: none;">enablerdao</a>. Made with 🐝 and ❤️</p>
+            <p style="color: #666; font-size: 0.8rem; margin-top: 0.5rem;">オープンソースで透明性のあるAI開発を推進しています</p>
+        </div>
+    </footer>
+
+    <!-- Floating Download Badge -->
+    <div class="floating-badge" onclick="document.querySelector('.download-section').scrollIntoView({behavior: 'smooth'})">
+        <span style="margin-right: 0.5rem;">💾</span>
+        <span>今すぐ無料ダウンロード</span>
+    </div>
+
+    <script>
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0.2s';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .testimonial-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animated Counter
+        const animateCounter = (element) => {
+            const target = parseFloat(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = target % 1 === 0 ? Math.floor(current).toLocaleString() : current.toFixed(1);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target % 1 === 0 ? target.toLocaleString() : target.toFixed(1);
+                }
+            };
+
+            updateCounter();
+        };
+
+        // Start counter animation when visible
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-number').forEach(el => {
+            counterObserver.observe(el);
+        });
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // Demo Chat Animation
+        const demoMessages = [
+            { type: 'user', text: 'Pythonで素数を判定する関数を書いて', delay: 1000 },
+            { type: 'ai', text: 'はい、素数を判定する関数を書きます：\n\n```python\ndef is_prime(n):\n    if n < 2:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            return False\n    return True\n```\n\nこの関数は効率的なアルゴリズムで素数判定を行います。', delay: 2000 }
+        ];
+
+        const demoChat = document.getElementById('demo-chat');
+        let messageIndex = 0;
+
+        const addDemoMessage = () => {
+            if (messageIndex < demoMessages.length) {
+                const message = demoMessages[messageIndex];
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `demo-message demo-${message.type}`;
+                messageDiv.innerHTML = message.text.replace(/\n/g, '<br>');
+                messageDiv.style.animationDelay = `${message.delay}ms`;
+                demoChat.appendChild(messageDiv);
+                messageIndex++;
+                setTimeout(addDemoMessage, message.delay + 1000);
+            } else {
+                // Reset demo after completion
+                setTimeout(() => {
+                    demoChat.innerHTML = '';
+                    messageIndex = 0;
+                    addDemoMessage();
+                }, 3000);
+            }
+        };
+
+        // Start demo when section is visible
+        const demoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    addDemoMessage();
+                    demoObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        demoObserver.observe(document.querySelector('.demo-section'));
+    </script>
+</body>
+</html>

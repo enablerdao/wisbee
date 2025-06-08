@@ -1,0 +1,13 @@
+node_modules
+.git
+.DS_Store
+*.log
+__pycache__
+*.pyc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+ollama-webui-server.py
+setup.sh
+start.sh
