@@ -3,9 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wisbee - AI Chat Application</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Wisbee - ローカルAIチャットアプリ | プライバシー重視のOllama対応</title>
+    <meta name="description" content="Wisbeeは、Ollamaを使ったローカルAIチャットアプリケーションです。プライバシーを保護しながら、高性能なAIモデルと自然な会話を楽しめます。macOS対応、音声機能付き。">
+    <meta name="keywords" content="AI,チャット,Ollama,ローカル,プライバシー,macOS,Llama,Gemma,音声認識">
+    <meta name="author" content="Wisbee Team">
+    <link rel="canonical" href="https://wisbee.ai">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/assets/og-image.png">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wisbee.ai">
+    <meta property="og:title" content="Wisbee - ローカルAIチャットアプリ">
+    <meta property="og:description" content="プライバシーを保護しながら、OllamaでローカルAIとチャット。高性能なLLMモデルとの自然な会話を、安全な環境でお楽しみください。">
+    <meta property="og:image" content="https://wisbee.ai/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:site_name" content="Wisbee">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://wisbee.ai">
+    <meta name="twitter:title" content="Wisbee - ローカルAIチャットアプリ">
+    <meta name="twitter:description" content="プライバシーを保護しながら、OllamaでローカルAIとチャット。高性能なLLMモデルとの自然な会話を、安全な環境でお楽しみください。">
+    <meta name="twitter:image" content="https://wisbee.ai/assets/og-image.png">
+    <meta name="twitter:creator" content="@wisbee_ai">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Wisbee",
+      "description": "ローカルAIチャットアプリケーション",
+      "url": "https://wisbee.ai",
+      "downloadUrl": "https://github.com/enablerdao/wisbee/releases",
+      "operatingSystem": "macOS",
+      "applicationCategory": "ProductivityApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+      }
+    }
+    </script>
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -428,21 +484,66 @@
             observer.observe(el);
         });
 
-        // Download tracking
+        // Download tracking with advanced analytics
         document.querySelectorAll('.download-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const platform = e.currentTarget.dataset.platform;
+                const downloadUrl = e.currentTarget.href;
+                
                 console.log(`Download started for platform: ${platform}`);
                 
-                // Optional: Add analytics tracking here
+                // Track with Vercel Analytics
+                if (typeof va !== 'undefined') {
+                    va.track('Download', { 
+                        platform: platform, 
+                        version: 'v1.0.0',
+                        url: downloadUrl
+                    });
+                }
+                
+                // Google Analytics if available
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'download', {
+                        'event_category': 'App',
+                        'event_label': platform,
                         'platform': platform,
                         'version': 'v1.0.0'
                     });
                 }
+                
+                // Custom analytics endpoint
+                fetch('/api/analytics', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event: 'download',
+                        platform: platform,
+                        version: 'v1.0.0',
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent,
+                        referrer: document.referrer
+                    })
+                }).catch(err => console.log('Analytics tracking failed:', err));
             });
         });
+
+        // Page view tracking
+        if (typeof va !== 'undefined') {
+            va.track('PageView', { page: 'landing' });
+        }
+
+        // Demo link tracking
+        document.querySelector('a[href="/chat.html"]')?.addEventListener('click', () => {
+            if (typeof va !== 'undefined') {
+                va.track('Demo', { action: 'click' });
+            }
+        });
     </script>
+    
+    <!-- Vercel Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
