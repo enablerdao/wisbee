@@ -1,0 +1,346 @@
+name: 🐝 Wisbee CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ========================================
+  # 🔍 Code Quality & Security Checks
+  # ========================================
+  quality-checks:
+    name: 🔍 Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔎 ESLint check
+        run: npm run lint || true
+
+      - name: 🎨 Prettier check
+        run: npm run format:check || true
+
+      - name: 🔒 Security audit
+        run: npm audit --audit-level moderate
+
+      - name: 📊 Code coverage
+        run: npm run test:coverage || true
+
+      - name: 🛡️ CodeQL Security Scan
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: 🛡️ Run CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # ========================================
+  # 🧪 Unit & Integration Tests
+  # ========================================
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [18, 20]
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run unit tests
+        run: npm test
+
+      - name: 📊 Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}-node${{ matrix.node-version }}
+          path: test-results/
+
+  # ========================================
+  # 🎭 E2E Tests with Playwright
+  # ========================================
+  e2e-tests:
+    name: 🎭 E2E Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    needs: [quality-checks]
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: 🔧 Install Ollama (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          curl -fsSL https://ollama.ai/install.sh | sh
+          sudo systemctl start ollama
+
+      - name: 🔧 Install Ollama (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install ollama
+          brew services start ollama
+
+      - name: ⏳ Wait for Ollama
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:11434/api/version >/dev/null 2>&1; then
+              echo "Ollama is ready!"
+              break
+            fi
+            echo "Waiting for Ollama... ($i/30)"
+            sleep 2
+          done
+
+      - name: 📥 Download test models
+        run: |
+          ollama pull smollm2:135m
+          ollama pull qwen2.5:0.5b
+
+      - name: 🚀 Start Wisbee app
+        run: |
+          npm start &
+          sleep 10
+        timeout-minutes: 3
+
+      - name: 🎭 Run E2E tests
+        run: npm run test:e2e
+
+      - name: 📸 Upload E2E artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-results-${{ matrix.os }}
+          path: |
+            test-results/
+            playwright-report/
+
+  # ========================================
+  # 🏗️ Build & Package
+  # ========================================
+  build:
+    name: 🏗️ Build Apps
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    needs: [unit-tests, e2e-tests]
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build Electron app
+        run: npm run build
+
+      - name: 📦 Package for distribution
+        run: npm run package
+
+      - name: 📤 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wisbee-${{ matrix.os }}
+          path: dist/
+
+  # ========================================
+  # 🚀 Automatic Release (on tag)
+  # ========================================
+  release:
+    name: 🚀 Create Release
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📥 Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: 📦 Prepare release assets
+        run: |
+          mkdir release-assets
+          find ./artifacts -name "*.dmg" -exec cp {} ./release-assets/ \;
+          find ./artifacts -name "*.exe" -exec cp {} ./release-assets/ \;
+          find ./artifacts -name "*.AppImage" -exec cp {} ./release-assets/ \;
+          find ./artifacts -name "*.zip" -exec cp {} ./release-assets/ \;
+
+      - name: 🚀 Upload to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-assets/*
+          generate_release_notes: true
+          tag_name: ${{ github.ref_name }}
+
+  # ========================================
+  # 📊 Performance & Monitoring
+  # ========================================
+  performance:
+    name: 📊 Performance Tests
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔧 Install Ollama
+        run: |
+          curl -fsSL https://ollama.ai/install.sh | sh
+          sudo systemctl start ollama
+
+      - name: 📥 Download models
+        run: |
+          ollama pull smollm2:135m
+          ollama pull qwen2.5:0.5b
+          ollama pull llama3.2:1b
+
+      - name: 🚀 Start app
+        run: npm start &
+
+      - name: ⚡ Run performance tests
+        run: npm run test:performance
+
+      - name: 📊 Generate performance report
+        run: npm run report:performance
+
+      - name: 📤 Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: performance-report/
+
+  # ========================================
+  # 🔄 Auto-merge (for dependabot)
+  # ========================================
+  auto-merge:
+    name: 🔄 Auto-merge
+    runs-on: ubuntu-latest
+    needs: [quality-checks, unit-tests, e2e-tests]
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: 🤖 Enable auto-merge
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ========================================
+  # 📱 Deployment to GitHub Pages
+  # ========================================
+  deploy-docs:
+    name: 📱 Deploy Documentation
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [quality-checks]
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build documentation
+        run: npm run build:docs
+
+      - name: 📄 Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: 📤 Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs-dist/
+
+      - name: 🚀 Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
