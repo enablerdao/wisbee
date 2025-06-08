@@ -1,0 +1,19 @@
+{
+  "source": {
+    "include": [".", "README.md"],
+    "exclude": ["node_modules", "tests", "dist", "coverage"]
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "node_modules/docdash"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": true
+    }
+  }
+}

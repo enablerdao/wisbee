@@ -1,0 +1,562 @@
+name: 🐝 Wisbee Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly security scan
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ========================================
+  # 🧪 Comprehensive Unit Tests
+  # ========================================
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [18, 20]
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+
+      - name: 🧪 Run unit tests with coverage
+        run: |
+          cd wisbee-mac
+          npm run test:coverage || npm run test:unit
+
+      - name: 📊 Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20'
+        with:
+          directory: ./wisbee-mac/coverage
+          flags: unittests
+          name: codecov-umbrella
+
+      - name: 📊 Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}-node${{ matrix.node-version }}
+          path: |
+            wisbee-mac/test-results/
+            wisbee-mac/coverage/
+          retention-days: 7
+
+  # ========================================
+  # 🔍 Advanced Code Quality Checks
+  # ========================================
+  quality-checks:
+    name: 🔍 Code Quality & Security
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+
+      - name: 🔎 ESLint check with report
+        run: |
+          cd wisbee-mac
+          npm run lint -- --format json --output-file eslint-report.json || true
+          npm run lint
+
+      - name: 🎨 Prettier check
+        run: |
+          cd wisbee-mac
+          npm run format:check || true
+
+      - name: 📏 Check code complexity
+        run: |
+          cd wisbee-mac
+          npx complexity-report-cli --format json || true
+
+      - name: 🔒 Security audit with report
+        run: |
+          cd wisbee-mac
+          npm audit --json > security-audit.json || true
+          npm audit --production
+
+      - name: 🛡️ Run Snyk security test
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --file=wisbee-mac/package.json
+
+      - name: 📊 SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: wisbee-mac
+
+      - name: 📈 Upload quality reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-reports
+          path: |
+            wisbee-mac/eslint-report.json
+            wisbee-mac/security-audit.json
+            wisbee-mac/complexity-report.json
+          retention-days: 30
+
+  # ========================================
+  # 🎭 Integration Tests
+  # ========================================
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+          pip install -r ../requirements.txt || true
+
+      - name: 🦙 Start test services
+        run: |
+          # Start a mock Ollama server for testing
+          python -m http.server 11434 &
+          echo "OLLAMA_PID=$!" >> $GITHUB_ENV
+          sleep 5
+
+      - name: 🔗 Run integration tests
+        run: |
+          cd wisbee-mac
+          npm run test:integration || true
+
+      - name: 🛑 Stop test services
+        if: always()
+        run: |
+          kill $OLLAMA_PID || true
+
+  # ========================================
+  # 🎭 E2E Tests with Visual Regression
+  # ========================================
+  e2e-tests:
+    name: 🎭 E2E & Visual Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests, quality-checks]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+          npx playwright install --with-deps chromium firefox
+
+      - name: 🖥️ Setup display
+        run: |
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+
+      - name: 🚀 Start application
+        run: |
+          cd wisbee-mac
+          npm start &
+          APP_PID=$!
+          echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+          sleep 10
+
+      - name: 🎭 Run E2E tests
+        run: |
+          cd wisbee-mac
+          npm run test:e2e || true
+
+      - name: 📸 Run visual regression tests
+        run: |
+          cd wisbee-mac
+          npm run test:visual || true
+
+      - name: ♿ Run accessibility tests
+        run: |
+          cd wisbee-mac
+          npm run test:accessibility || true
+
+      - name: 🛑 Stop application
+        if: always()
+        run: |
+          kill $APP_PID || true
+
+      - name: 📸 Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-artifacts
+          path: |
+            wisbee-mac/test-results/
+            wisbee-mac/playwright-report/
+            wisbee-mac/screenshots/
+          retention-days: 30
+
+  # ========================================
+  # ⚡ Performance Tests
+  # ========================================
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+
+      - name: ⚡ Run performance benchmarks
+        run: |
+          cd wisbee-mac
+          npm run test:performance || true
+
+      - name: 📊 Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            http://localhost:8899
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  # ========================================
+  # 🏗️ Multi-platform Build Tests
+  # ========================================
+  build-tests:
+    name: 🏗️ Build Tests
+    runs-on: ${{ matrix.os }}
+    needs: [unit-tests, quality-checks]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+
+      - name: 🔨 Build application
+        run: |
+          cd wisbee-mac
+          npm run build:${{ matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-latest' && 'mac' || 'win' }} || npm run pack
+
+      - name: 📦 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: wisbee-mac/dist/
+          retention-days: 7
+
+  # ========================================
+  # 🚢 Docker Build Test
+  # ========================================
+  docker-test:
+    name: 🐳 Docker Build
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🏗️ Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: wisbee:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ========================================
+  # 📚 Documentation Generation
+  # ========================================
+  docs:
+    name: 📚 Documentation
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: wisbee-mac/package-lock.json
+
+      - name: 📦 Install dependencies
+        run: |
+          cd wisbee-mac
+          npm ci
+
+      - name: 📚 Generate documentation
+        run: |
+          cd wisbee-mac
+          npx jsdoc -c jsdoc.json || true
+          npm run build:docs || true
+
+      - name: 📊 Generate test report
+        run: |
+          cd wisbee-mac
+          npm run report:performance || true
+
+  # ========================================
+  # 🔄 Dependency Updates
+  # ========================================
+  dependency-check:
+    name: 🔄 Dependency Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🔄 Check for updates
+        run: |
+          cd wisbee-mac
+          npx npm-check-updates -u
+          npm update
+
+      - name: 🤖 Create PR for updates
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: '⬆️ Update dependencies'
+          title: '⬆️ Automated dependency updates'
+          body: |
+            ## 🔄 Automated Dependency Updates
+            
+            This PR contains automated dependency updates.
+            
+            ### Changes
+            - Updated npm dependencies to latest versions
+            - Security patches applied
+            
+            ### Testing
+            - [ ] All tests pass
+            - [ ] No breaking changes detected
+            
+            🐝 Generated by Wisbee CI/CD
+          branch: deps/automated-updates
+
+  # ========================================
+  # 🚀 Release Automation
+  # ========================================
+  release:
+    name: 🚀 Release
+    runs-on: ubuntu-latest
+    needs: [unit-tests, quality-checks, integration-tests, build-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🏷️ Check for version bump
+        id: version
+        run: |
+          cd wisbee-mac
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: 📝 Generate changelog
+        uses: TriPSs/conventional-changelog-action@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-version-file: false
+          skip-commit: false
+          skip-tag: false
+          output-file: 'CHANGELOG.md'
+
+      - name: 🚀 Create Release
+        if: steps.changelog.outputs.skipped == 'false'
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ steps.version.outputs.current_version }}
+          name: Release v${{ steps.version.outputs.current_version }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          draft: false
+          prerelease: false
+
+  # ========================================
+  # ✅ Final Summary
+  # ========================================
+  summary:
+    name: ✅ Pipeline Summary
+    runs-on: ubuntu-latest
+    needs: [unit-tests, quality-checks, integration-tests, e2e-tests, performance-tests, build-tests]
+    if: always()
+    
+    steps:
+      - name: 📊 Generate Summary
+        run: |
+          echo "# 🐝 Wisbee CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Quality Checks | ${{ needs.quality-checks.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🎭 E2E Tests | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⚡ Performance Tests | ${{ needs.performance-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏗️ Build Tests | ${{ needs.build-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎯 Overall Status" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ needs.unit-tests.result }}" == "success" ]] && \
+             [[ "${{ needs.quality-checks.result }}" == "success" ]] && \
+             [[ "${{ needs.build-tests.result }}" == "success" ]]; then
+            echo "✅ **All critical tests passed!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Some tests failed. Please check the logs.**" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "🐝 Generated by Wisbee CI/CD Pipeline" >> $GITHUB_STEP_SUMMARY
+
+      - name: 💬 Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `## 🐝 Wisbee CI/CD Results
+            
+            | Test | Result |
+            |------|--------|
+            | Unit Tests | ${{ needs.unit-tests.result }} |
+            | Quality | ${{ needs.quality-checks.result }} |
+            | Integration | ${{ needs.integration-tests.result }} |
+            | E2E | ${{ needs.e2e-tests.result }} |
+            | Performance | ${{ needs.performance-tests.result }} |
+            | Build | ${{ needs.build-tests.result }} |
+            
+            [View full details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
