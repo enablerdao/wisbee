@@ -22,6 +22,14 @@
     {
       "source": "/en",
       "destination": "/en.html"
+    },
+    {
+      "source": "/story",
+      "destination": "/story.html"
+    },
+    {
+      "source": "/press",
+      "destination": "/press.html"
     }
   ],
   "headers": [

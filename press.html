@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbee Press Kit - メディア関係者向け資料</title>
+    <meta name="description" content="Wisbee公式プレスキット。メディア関係者向けの高解像度画像、プレスリリース、インタビュー資料、事実確認データを提供。">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #f59e0b;
+            --accent-hover: #dc8a0a;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .section {
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+        }
+
+        .check {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .cross {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .timeline {
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--accent);
+            min-width: 120px;
+        }
+
+        .quote {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            font-style: italic;
+            margin: 2rem 0;
+        }
+
+        .asset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .asset-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .asset-preview {
+            height: 200px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .asset-info {
+            padding: 1rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🐝</div>
+                <h1>Wisbee Press Kit</h1>
+                <p class="subtitle">メディア関係者向け公式資料</p>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>press@wisbee.ai</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-twitter"></i>
+                        <span>@wisbee_ai</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-github"></i>
+                        <span>enablerdao/wisbee</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 概要セクション -->
+        <div class="section">
+            <h2>🚀 製品概要</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>Wisbeeとは</h4>
+                    <p>ChatGPTの代替となる完全ローカルAIチャットアプリケーション。プライバシーを保護しながら、高速で無料のAI体験を提供します。</p>
+                </div>
+                <div class="card">
+                    <h4>主要な特徴</h4>
+                    <ul>
+                        <li>GPT-4より3.6倍高速（54.3 vs 15 tokens/秒）</li>
+                        <li>完全無料（年間36,000円節約効果）</li>
+                        <li>100%プライベート（ローカル処理）</li>
+                        <li>オフライン動作対応</li>
+                        <li>使用制限なし</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>対象ユーザー</h4>
+                    <ul>
+                        <li>プライバシーを重視する個人・企業</li>
+                        <li>コストを抑えたいAI利用者</li>
+                        <li>開発者・技術者</li>
+                        <li>学生・教育機関</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- パフォーマンスデータ -->
+        <div class="section">
+            <h2>📊 実測パフォーマンスデータ</h2>
+            
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="stat-number">54.3</div>
+                    <div class="stat-label">tokens/秒 (llama3.2:1b)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">3.6倍</div>
+                    <div class="stat-label">GPT-4より高速</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">¥36,000</div>
+                    <div class="stat-label">年間節約効果</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">ローカル処理</div>
+                </div>
+            </div>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>項目</th>
+                            <th>Wisbee</th>
+                            <th>ChatGPT Plus</th>
+                            <th>差異</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>月額料金</td>
+                            <td class="check">¥0</td>
+                            <td class="cross">¥3,000</td>
+                            <td>年間¥36,000節約</td>
+                        </tr>
+                        <tr>
+                            <td>速度 (vs GPT-4)</td>
+                            <td class="check">54.3 tok/s</td>
+                            <td class="cross">15 tok/s</td>
+                            <td>3.6倍高速</td>
+                        </tr>
+                        <tr>
+                            <td>プライバシー</td>
+                            <td class="check">100%ローカル</td>
+                            <td class="cross">クラウド送信</td>
+                            <td>データ漏洩リスクゼロ</td>
+                        </tr>
+                        <tr>
+                            <td>使用制限</td>
+                            <td class="check">なし</td>
+                            <td class="cross">3時間40回</td>
+                            <td>無制限利用</td>
+                        </tr>
+                        <tr>
+                            <td>オフライン動作</td>
+                            <td class="check">対応</td>
+                            <td class="cross">不可</td>
+                            <td>ネット環境不要</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 開発ストーリー -->
+        <div class="section">
+            <h2>📖 開発ストーリー</h2>
+            
+            <div class="quote">
+                「ChatGPTは素晴らしいが、プライバシーとコストが課題だった。そこで、同等の性能を持ちながら、完全にプライベートで無料のソリューションを作ることにした。」
+                <br><strong>- 開発チーム</strong>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2024年3月</div>
+                    <div>
+                        <h4>プロジェクト開始</h4>
+                        <p>プライバシーとコストの問題を解決するローカルAIの開発に着手</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2024年8月</div>
+                    <div>
+                        <h4>初期プロトタイプ完成</h4>
+                        <p>基本的なチャット機能とローカル推論エンジンを実装</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2024年12月</div>
+                    <div>
+                        <h4>ベータ版リリース</h4>
+                        <p>限定ユーザーでのテスト開始、パフォーマンス最適化</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025年6月</div>
+                    <div>
+                        <h4>正式版公開</h4>
+                        <p>一般公開開始、GPT-4比3.6倍高速を実現</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- メディア素材 -->
+        <div class="section">
+            <h2>🎨 メディア素材</h2>
+            
+            <div class="asset-grid">
+                <div class="asset-card">
+                    <div class="asset-preview">🐝</div>
+                    <div class="asset-info">
+                        <h4>ロゴ・アイコン</h4>
+                        <p>高解像度PNG、SVG、ICOファイル</p>
+                        <div class="tag">1024x1024</div>
+                        <div class="tag">ベクター</div>
+                        <a href="/assets/logo-pack.zip" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            ダウンロード
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="asset-card">
+                    <div class="asset-preview">📊</div>
+                    <div class="asset-info">
+                        <h4>性能比較チャート</h4>
+                        <p>速度・コスト・プライバシー比較表</p>
+                        <div class="tag">PNG</div>
+                        <div class="tag">PDF</div>
+                        <a href="/assets/performance-charts.zip" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            ダウンロード
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="asset-card">
+                    <div class="asset-preview">📱</div>
+                    <div class="asset-info">
+                        <h4>スクリーンショット</h4>
+                        <p>アプリケーション画面キャプチャ</p>
+                        <div class="tag">4K対応</div>
+                        <div class="tag">ダーク/ライト</div>
+                        <a href="/assets/screenshots.zip" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            ダウンロード
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="asset-card">
+                    <div class="asset-preview">🎬</div>
+                    <div class="asset-info">
+                        <h4>デモ動画・GIF</h4>
+                        <p>実際の動作デモ、速度比較</p>
+                        <div class="tag">MP4</div>
+                        <div class="tag">GIF</div>
+                        <a href="/assets/demo-videos.zip" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            ダウンロード
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- プレスリリース -->
+        <div class="section">
+            <h2>📰 プレスリリース</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>2025年6月9日</h4>
+                    <h3>ChatGPTより3.6倍高速、完全無料のローカルAI「Wisbee」登場</h3>
+                    <p>プライバシーを保護しながら、年間36,000円の節約効果を実現する革新的なAIチャットアプリケーション</p>
+                    <a href="/press/release-20250609.pdf" class="download-btn">
+                        <i class="fas fa-file-pdf"></i>
+                        PDFダウンロード
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <h4>English Version</h4>
+                    <h3>Wisbee: Free Local AI Chat Alternative 3.6x Faster Than ChatGPT</h3>
+                    <p>Revolutionary AI chat application that saves $240/year while protecting user privacy with 100% local processing</p>
+                    <a href="/press/release-en-20250609.pdf" class="download-btn">
+                        <i class="fas fa-file-pdf"></i>
+                        Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="section">
+            <h2>❓ よくある質問（FAQ）</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>Q: なぜ無料で提供できるのですか？</h4>
+                    <p>オープンソースコミュニティによる開発で、ローカル処理のためサーバーコストが発生しないためです。</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Q: データのプライバシーは本当に安全ですか？</h4>
+                    <p>はい。すべての処理がユーザーのデバイス内で完結し、データは一切外部に送信されません。</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Q: どのようなAIモデルが利用できますか？</h4>
+                    <p>Llama 3.2、Qwen 2.5、Gemma 2など、複数の最新オープンソースモデルに対応しています。</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Q: 企業での利用は可能ですか？</h4>
+                    <p>はい。ライセンス制限なく、商用利用も可能です。機密情報も安全に処理できます。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 連絡先 -->
+        <div class="section">
+            <h2>📞 お問い合わせ</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>📧 プレス関係</h4>
+                    <p>取材依頼、プレスリリース配信</p>
+                    <strong>press@wisbee.ai</strong>
+                </div>
+                
+                <div class="card">
+                    <h4>🤝 ビジネス関係</h4>
+                    <p>企業導入、パートナーシップ</p>
+                    <strong>business@wisbee.ai</strong>
+                </div>
+                
+                <div class="card">
+                    <h4>🛠️ 技術関係</h4>
+                    <p>技術的な質問、開発協力</p>
+                    <strong>tech@wisbee.ai</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Download tracking
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const filename = e.currentTarget.href.split('/').pop();
+                console.log(`Press kit download: ${filename}`);
+                
+                if (typeof va !== 'undefined') {
+                    va.track('PressDownload', { 
+                        file: filename,
+                        type: 'media_kit'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

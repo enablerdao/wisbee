@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisbeeのストーリー - ハチのように賢く、自由に</title>
+    <meta name="description" content="なぜWisbeeが生まれたのか？ハチの物語を通じて語る、プライバシーと自由への想い">
+    
+    <!-- OG Tags -->
+    <meta property="og:title" content="Wisbeeのストーリー - ハチのように賢く、自由に">
+    <meta property="og:description" content="小さなハチが大きな巣から飛び立つように、あなたも自分だけの知恵の巣を築きませんか？">
+    <meta property="og:url" content="https://wisbee.ai/story">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://wisbee.ai/assets/logos/wisbee_og_story.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+        
+        .bee-icon {
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+        
+        .chapter {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .chapter h2 {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chapter p {
+            margin-bottom: 1rem;
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #2d3748;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .stat {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .poem {
+            background: linear-gradient(45deg, #ffeaa7, #fab1a0);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+            font-style: italic;
+            color: #2d3748;
+        }
+        
+        .poem p {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .cta {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin-top: 3rem;
+        }
+        
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #ffd700;
+            color: #2d3748;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">← Wisbeeホームに戻る</a>
+        </div>
+        
+        <div class="hero">
+            <div class="bee-icon">🐝</div>
+            <h1>ハチのように賢く、自由に</h1>
+            <p class="subtitle">なぜWisbeeが生まれたのか？小さなハチの大きな物語</p>
+        </div>
+        
+        <div class="chapter">
+            <h2>🌅 はじまりの物語</h2>
+            <p>その昔、一匹の小さなハチがいました。他のハチたちは大きな巣に依存し、女王蜂の指示を待っていました。しかし、この小さなハチは違いました。</p>
+            
+            <div class="highlight">
+                「なぜ、自分の知恵を他者に委ねなければならないのか？」
+            </div>
+            
+            <p>そのハチは考えました。自分の頭で考え、自分の力で飛び、自分だけの蜜を見つける。それこそが、本当の自由ではないか、と。</p>
+        </div>
+        
+        <div class="chapter">
+            <h2>🏠 自分だけの巣を築く</h2>
+            <p>現代の私たちも、そのハチと同じです。ChatGPTという大きな巣に頼り、月額3,000円を払い続け、自分の思考さえも外部に預けてしまっている。</p>
+            
+            <div class="highlight">
+                でも、本当にそれでいいのでしょうか？
+            </div>
+            
+            <p>あなたのアイデアは、あなただけのもの。<br>
+            あなたの質問は、あなただけのもの。<br>
+            あなたの創造性は、あなただけのもの。</p>
+            
+            <p>なぜそれを、遠い雲の向こうに送り続けるのですか？</p>
+        </div>
+        
+        <div class="chapter">
+            <h2>⚡ ハチのように素早く</h2>
+            <p>自然界のハチは、驚くべき効率性を持っています。無駄のない飛行ルート、最適化された巣作り、そして圧倒的な速度。</p>
+            
+            <p>Wisbeeも同じです。ChatGPT GPT-4が15秒かかる作業を、わずか4秒で完了する。<strong>3.6倍の速度</strong>で、あなたの思考に追いつきます。</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">ChatGPT GPT-4<br>tokens/秒 🐌</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">54.3</div>
+                    <div class="stat-label">Wisbee<br>tokens/秒 🐝⚡</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chapter">
+            <h2>🔒 巣の中の秘密</h2>
+            <p>ハチは、自分の巣の中身を誰にも見せません。それは彼らの生命線であり、最も大切な宝物だから。</p>
+            
+            <p>あなたの思考も同じです。あなたのアイデア、戦略、創作活動...それらはあなただけの蜜です。</p>
+            
+            <div class="highlight">
+                Wisbeeは、あなたの秘密を外に漏らしません。
+            </div>
+            
+            <p>すべてはあなたのデバイスの中で完結し、インターネットの向こう側に送信されることは一切ありません。</p>
+        </div>
+        
+        <div class="chapter">
+            <h2>💰 自由への投資</h2>
+            <p>年間36,000円。それは、あなたがChatGPT Plusに支払っている「自由への対価」です。</p>
+            
+            <p>しかし、本当の自由は買うものではありません。<strong>築くものです。</strong></p>
+            
+            <div class="highlight">
+                Wisbeeは完全無料。<br>
+                なぜなら、知恵と自由は、誰からも奪われるべきではないから。
+            </div>
+        </div>
+        
+        <div class="chapter">
+            <h2>🌍 どこでも飛べる翼</h2>
+            <p>ハチは、天候に関係なく飛び回ります。雨の日も、風の日も、自分の力で進み続ける。</p>
+            
+            <p>Wisbeeも同じです。インターネットが繋がらない山奥でも、海外のホテルでも、電車の中でも。</p>
+            
+            <div class="highlight">
+                あなたの思考に、制限はありません。
+            </div>
+        </div>
+        
+        <div class="chapter">
+            <h2>🎯 なぜ「Wisbee」なのか</h2>
+            <p><strong>Wis</strong>dom（知恵） + <strong>Bee</strong>（蜂） = <strong>Wisbee</strong></p>
+            
+            <ul style="list-style: none; padding-left: 0;">
+                <li>🧠 <strong>賢明さ</strong>: 効率的で実用的な知恵</li>
+                <li>🗽 <strong>自立性</strong>: 他に依存しない自分だけの力</li>
+                <li>🤝 <strong>協調性</strong>: 必要な時は他者とも連携する柔軟性</li>
+                <li>💪 <strong>勤勉さ</strong>: 絶え間ない学習と成長</li>
+                <li>🕊️ <strong>自由</strong>: どこでも、いつでも、制約なく</li>
+            </ul>
+        </div>
+        
+        <div class="poem">
+            <h3>🎵 ハチの詩</h3>
+            <p>大きな巣に頼らずに</p>
+            <p>自分の翼で飛んでいこう</p>
+            <p>3.6倍の速さで</p>
+            <p>未来へと向かおう</p>
+            <br>
+            <p>データは外に出さずに</p>
+            <p>プライバシーを守りながら</p>
+            <p>年間36,000円を節約して</p>
+            <p>本当の自由を手に入れよう</p>
+            <br>
+            <p><strong>Wisbee、Wisbee</strong></p>
+            <p><strong>小さなハチの大きな夢</strong></p>
+            <p><strong>知恵と勇気を胸に秘めて</strong></p>
+            <p><strong>今日も明日も飛び続けよう</strong></p>
+        </div>
+        
+        <div class="cta">
+            <h2>🚀 小さなハチから始まる革命</h2>
+            <p>一匹のハチが変わることから、すべては始まります。<br>
+            あなたが、その最初の一匹になってください。</p>
+            
+            <p><strong>ChatGPTという大きな巣から飛び立ち、<br>
+            自分だけの知恵の巣を築きませんか？</strong></p>
+            
+            <p>より速く、より安全に、より自由に。<br>
+            Wisbeeと一緒に、新しい時代を切り開きましょう。</p>
+            
+            <a href="/" class="cta-button">🐝 今すぐWisbeeを始める</a>
+        </div>
+    </div>
+    
+    <script>
+        // スクロールアニメーション
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // 章に対してアニメーション適用
+        document.querySelectorAll('.chapter').forEach(chapter => {
+            chapter.style.opacity = '0';
+            chapter.style.transform = 'translateY(30px)';
+            chapter.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(chapter);
+        });
+    </script>
+</body>
+</html>
