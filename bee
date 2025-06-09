@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 """
-🐝 Bee - Command Line Chat Interface for Wisbee
-A beautiful CLI chat tool with Ollama integration
+🐝 Bee CLI - Universal Wisbee Command Interface
+Launch various Wisbee tools and services
 """
 
 import os
 import sys
+import subprocess
 import json
+import webbrowser
 import time
-import requests
-import readline
-from datetime import datetime
-from typing import List, Dict, Optional
+import socket
+from pathlib import Path
 
 # Color codes
 YELLOW = '\033[93m'
 ORANGE = '\033[38;5;208m'
 BLUE = '\033[94m'
 GREEN = '\033[92m'
+RED = '\033[91m'
 GRAY = '\033[90m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
-ITALIC = '\033[3m'
 
 # Bee ASCII art
 BEE_ART = f"""{YELLOW}
@@ -30,255 +30,381 @@ BEE_ART = f"""{YELLOW}
     \\__/ Wisbee \\__/
 {RESET}"""
 
-class BeeChat:
+class BeeCLI:
     def __init__(self):
-        self.ollama_url = "http://localhost:11434"
-        self.model = "llama3.2:latest"
-        self.conversation_history = []
-        self.setup_readline()
-        
-    def setup_readline(self):
-        """Setup readline for better input handling"""
-        readline.parse_and_bind("tab: complete")
-        readline.parse_and_bind("set editing-mode vi")
-        
-        # History file
-        history_file = os.path.expanduser("~/.bee_history")
-        try:
-            readline.read_history_file(history_file)
-        except FileNotFoundError:
-            pass
-            
-        # Save history on exit
-        import atexit
-        atexit.register(readline.write_history_file, history_file)
+        self.wisbee_dir = Path(__file__).parent
+        self.commands = {
+            'chat': self.chat,
+            'web': self.web,
+            'iphone': self.iphone,
+            'ios': self.iphone,
+            'mac': self.mac,
+            'test': self.test,
+            'bench': self.benchmark,
+            'server': self.server,
+            'install': self.install,
+            'models': self.models,
+            'status': self.status,
+            'update': self.update,
+            'voice': self.voice,
+            'help': self.help
+        }
     
-    def check_ollama_connection(self) -> bool:
+    def print_header(self):
+        """Print bee header"""
+        print(BEE_ART)
+        print(f"{BOLD}Bee CLI - Wisbee Command Interface{RESET}")
+        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
+    
+    def chat(self, args):
+        """Start chat interface"""
+        print(f"{GREEN}🐝 Starting Wisbee chat...{RESET}")
+        # Import and run the original bee chat
+        bee_path = Path(__file__).parent / "bee-chat"
+        if bee_path.exists():
+            subprocess.run([sys.executable, str(bee_path)])
+        else:
+            print(f"{RED}Error: bee chat script not found{RESET}")
+    
+    def web(self, args):
+        """Launch web interface"""
+        print(f"{GREEN}🌐 Starting Wisbee web interface...{RESET}")
+        
+        # Check if server is already running
+        port = 8080
+        if self.is_port_open('localhost', port):
+            print(f"{YELLOW}Web server already running on port {port}{RESET}")
+        else:
+            # Start server
+            server_script = self.wisbee_dir / "ollama-webui-server.py"
+            if server_script.exists():
+                print(f"{BLUE}Starting server on http://localhost:{port}{RESET}")
+                subprocess.Popen([sys.executable, str(server_script)], 
+                               stdout=subprocess.DEVNULL, 
+                               stderr=subprocess.DEVNULL)
+                time.sleep(2)
+            else:
+                print(f"{RED}Error: Server script not found{RESET}")
+                return
+        
+        # Open browser
+        webbrowser.open(f"http://localhost:{port}")
+        print(f"{GREEN}✓ Opened browser{RESET}")
+    
+    def iphone(self, args):
+        """Launch iPhone app in simulator"""
+        print(f"{GREEN}📱 Launching Wisbee iOS app...{RESET}")
+        
+        ios_dir = self.wisbee_dir / "wisbee-ios"
+        if not ios_dir.exists():
+            print(f"{RED}Error: iOS project not found{RESET}")
+            return
+        
+        # Open Xcode project
+        if '--xcode' in args:
+            print(f"{BLUE}Opening in Xcode...{RESET}")
+            subprocess.run(['open', str(ios_dir / 'WisbeeSimple.xcodeproj')])
+        else:
+            # Build and run in simulator
+            print(f"{BLUE}Building for iPhone simulator...{RESET}")
+            cmd = [
+                'xcodebuild',
+                '-project', str(ios_dir / 'WisbeeSimple.xcodeproj'),
+                '-scheme', 'WisbeeSimple',
+                '-destination', 'platform=iOS Simulator,name=iPhone 15',
+                'build'
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.returncode == 0:
+                print(f"{GREEN}✓ Build successful!{RESET}")
+                # Launch simulator
+                subprocess.run(['open', '-a', 'Simulator'])
+                # Install and launch app
+                print(f"{BLUE}Installing app...{RESET}")
+                # Get simulator ID
+                list_cmd = ['xcrun', 'simctl', 'list', 'devices', 'available', '-j']
+                devices = json.loads(subprocess.check_output(list_cmd).decode())
+                
+                iphone_id = None
+                for runtime, device_list in devices['devices'].items():
+                    for device in device_list:
+                        if 'iPhone 15' in device['name'] and device['state'] == 'Booted':
+                            iphone_id = device['udid']
+                            break
+                
+                if iphone_id:
+                    # Install app
+                    app_path = Path.home() / 'Library/Developer/Xcode/DerivedData'
+                    # Find the app
+                    for path in app_path.rglob('WisbeeSimple.app'):
+                        if 'Debug-iphonesimulator' in str(path):
+                            subprocess.run(['xcrun', 'simctl', 'install', iphone_id, str(path)])
+                            subprocess.run(['xcrun', 'simctl', 'launch', iphone_id, 'com.wisbee.simple'])
+                            print(f"{GREEN}✓ App launched!{RESET}")
+                            break
+            else:
+                print(f"{RED}Build failed. Use 'bee iphone --xcode' to debug{RESET}")
+    
+    def mac(self, args):
+        """Launch Mac app"""
+        print(f"{GREEN}🖥️  Launching Wisbee Mac app...{RESET}")
+        
+        mac_app = Path('/Applications/Wisbee.app')
+        if mac_app.exists():
+            subprocess.run(['open', str(mac_app)])
+            print(f"{GREEN}✓ Launched Wisbee.app{RESET}")
+        else:
+            print(f"{YELLOW}Wisbee.app not found in Applications{RESET}")
+            print(f"{BLUE}Download from: https://github.com/enablerdao/wisbee/releases{RESET}")
+    
+    def test(self, args):
+        """Run tests"""
+        print(f"{GREEN}🧪 Running Wisbee tests...{RESET}")
+        
+        if '--quick' in args:
+            print(f"{BLUE}Running quick tests...{RESET}")
+            test_script = self.wisbee_dir.parent / 'quick_3q_test.sh'
+        elif '--full' in args:
+            print(f"{BLUE}Running full test suite...{RESET}")
+            test_script = self.wisbee_dir.parent / 'comprehensive_test.sh'
+        else:
+            print(f"{BLUE}Running standard tests...{RESET}")
+            test_script = self.wisbee_dir.parent / 'obench.sh'
+        
+        if test_script.exists():
+            subprocess.run(['bash', str(test_script)])
+        else:
+            # Simple connectivity test
+            print(f"{BLUE}Testing Ollama connection...{RESET}")
+            if self.check_ollama():
+                print(f"{GREEN}✓ Ollama is running{RESET}")
+                # List models
+                result = subprocess.run(['ollama', 'list'], capture_output=True, text=True)
+                print(f"\n{BOLD}Available models:{RESET}")
+                print(result.stdout)
+            else:
+                print(f"{RED}✗ Ollama is not running{RESET}")
+                print(f"{YELLOW}Start with: ollama serve{RESET}")
+    
+    def benchmark(self, args):
+        """Run benchmarks"""
+        print(f"{GREEN}⚡ Running Wisbee benchmarks...{RESET}")
+        
+        bench_script = self.wisbee_dir.parent / 'obench.sh'
+        if bench_script.exists():
+            cmd = ['bash', str(bench_script)]
+            if args:
+                cmd.extend(args)
+            subprocess.run(cmd)
+        else:
+            print(f"{RED}Benchmark script not found{RESET}")
+    
+    def server(self, args):
+        """Manage Ollama server"""
+        if '--start' in args or not args:
+            print(f"{GREEN}🚀 Starting Ollama server...{RESET}")
+            subprocess.Popen(['ollama', 'serve'])
+            print(f"{GREEN}✓ Server started{RESET}")
+        elif '--stop' in args:
+            print(f"{YELLOW}Stopping Ollama server...{RESET}")
+            subprocess.run(['pkill', '-f', 'ollama serve'])
+            print(f"{GREEN}✓ Server stopped{RESET}")
+        elif '--status' in args:
+            self.check_server_status()
+    
+    def install(self, args):
+        """Install models or components"""
+        if not args:
+            print(f"{YELLOW}Usage: bee install <model>{RESET}")
+            print(f"Example: bee install llama3.2")
+            return
+        
+        model = args[0]
+        print(f"{GREEN}📦 Installing {model}...{RESET}")
+        subprocess.run(['ollama', 'pull', model])
+    
+    def models(self, args):
+        """List available models"""
+        print(f"{GREEN}📋 Available models:{RESET}")
+        
+        # Local models
+        print(f"\n{BOLD}Local models:{RESET}")
+        result = subprocess.run(['ollama', 'list'], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(result.stdout)
+        else:
+            print(f"{GRAY}No local models found{RESET}")
+        
+        # Popular models
+        print(f"\n{BOLD}Popular models to install:{RESET}")
+        models = [
+            "llama3.2:latest - Fast and efficient",
+            "gemma2:2b - Google's compact model",
+            "qwen2.5:0.5b - Tiny but capable",
+            "phi3:mini - Microsoft's small model",
+            "mistral:7b - Strong general purpose"
+        ]
+        for model in models:
+            print(f"  • {model}")
+        print(f"\n{GRAY}Install with: bee install <model>{RESET}")
+    
+    def status(self, args):
+        """Show system status"""
+        print(f"{GREEN}📊 Wisbee System Status{RESET}")
+        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}")
+        
+        # Ollama status
+        if self.check_ollama():
+            print(f"{GREEN}● Ollama Server:{RESET} Running")
+        else:
+            print(f"{RED}● Ollama Server:{RESET} Not running")
+        
+        # Web server status
+        if self.is_port_open('localhost', 8080):
+            print(f"{GREEN}● Web Interface:{RESET} Running on :8080")
+        else:
+            print(f"{GRAY}● Web Interface:{RESET} Not running")
+        
+        # Check for apps
+        if Path('/Applications/Wisbee.app').exists():
+            print(f"{GREEN}● Mac App:{RESET} Installed")
+        else:
+            print(f"{GRAY}● Mac App:{RESET} Not installed")
+        
+        # iOS project
+        if (self.wisbee_dir / 'wisbee-ios').exists():
+            print(f"{GREEN}● iOS Project:{RESET} Available")
+        else:
+            print(f"{GRAY}● iOS Project:{RESET} Not found")
+        
+        # Models count
+        result = subprocess.run(['ollama', 'list'], capture_output=True, text=True)
+        if result.returncode == 0:
+            model_count = len(result.stdout.strip().split('\n')) - 1
+            print(f"{BLUE}● Models:{RESET} {model_count} installed")
+    
+    def update(self, args):
+        """Update Wisbee"""
+        print(f"{GREEN}🔄 Updating Wisbee...{RESET}")
+        
+        # Update from git
+        if (self.wisbee_dir / '.git').exists():
+            os.chdir(self.wisbee_dir)
+            subprocess.run(['git', 'pull'])
+            print(f"{GREEN}✓ Updated from git{RESET}")
+        else:
+            print(f"{YELLOW}Not a git repository. Download latest from:{RESET}")
+            print(f"{BLUE}https://github.com/enablerdao/wisbee{RESET}")
+    
+    def voice(self, args):
+        """Launch voice chat"""
+        print(f"{GREEN}🎙️  Starting voice chat...{RESET}")
+        
+        voice_html = self.wisbee_dir / 'realtime-voice-chat.html'
+        if voice_html.exists():
+            webbrowser.open(f'file://{voice_html}')
+            print(f"{GREEN}✓ Opened voice chat interface{RESET}")
+        else:
+            print(f"{RED}Voice chat interface not found{RESET}")
+    
+    def help(self, args=[]):
+        """Show help"""
+        self.print_header()
+        
+        print(f"{BOLD}Usage:{RESET} bee <command> [options]\n")
+        
+        print(f"{BOLD}Commands:{RESET}")
+        commands = [
+            ("chat", "Start interactive chat (default)"),
+            ("web", "Launch web interface"),
+            ("iphone", "Launch iOS app in simulator"),
+            ("mac", "Launch Mac desktop app"),
+            ("test", "Run tests"),
+            ("bench", "Run performance benchmarks"),
+            ("server", "Manage Ollama server"),
+            ("install", "Install AI models"),
+            ("models", "List available models"),
+            ("status", "Show system status"),
+            ("update", "Update Wisbee"),
+            ("voice", "Launch voice chat"),
+            ("help", "Show this help")
+        ]
+        
+        for cmd, desc in commands:
+            print(f"  {YELLOW}{cmd:<10}{RESET} {desc}")
+        
+        print(f"\n{BOLD}Examples:{RESET}")
+        print(f"  bee              # Start chat")
+        print(f"  bee web          # Launch web UI")
+        print(f"  bee iphone       # Run iOS app")
+        print(f"  bee test --quick # Run quick tests")
+        print(f"  bee install llama3.2")
+        
+        print(f"\n{GRAY}Version: 2.0.0 | Learn more: https://wisbee.ai{RESET}")
+    
+    def check_ollama(self):
         """Check if Ollama is running"""
         try:
-            response = requests.get(f"{self.ollama_url}/api/tags", timeout=2)
-            return response.status_code == 200
+            result = subprocess.run(['ollama', 'list'], 
+                                  capture_output=True, 
+                                  timeout=2)
+            return result.returncode == 0
         except:
             return False
     
-    def list_models(self) -> List[str]:
-        """List available Ollama models"""
-        try:
-            response = requests.get(f"{self.ollama_url}/api/tags")
-            data = response.json()
-            return [model['name'] for model in data.get('models', [])]
-        except:
-            return []
+    def is_port_open(self, host, port):
+        """Check if port is open"""
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        return result == 0
     
-    def stream_response(self, prompt: str) -> str:
-        """Stream response from Ollama"""
-        payload = {
-            "model": self.model,
-            "prompt": prompt,
-            "stream": True
-        }
-        
-        full_response = ""
-        try:
-            response = requests.post(
-                f"{self.ollama_url}/api/generate",
-                json=payload,
-                stream=True
-            )
-            
-            print(f"\n{ORANGE}🐝 Wisbee:{RESET} ", end="", flush=True)
-            
-            for line in response.iter_lines():
-                if line:
-                    data = json.loads(line)
-                    chunk = data.get('response', '')
-                    print(chunk, end="", flush=True)
-                    full_response += chunk
-                    
-                    if data.get('done', False):
-                        break
-            
-            print("\n")
-            return full_response
-            
-        except Exception as e:
-            error_msg = f"\n{GRAY}エラー: {str(e)}{RESET}\n"
-            print(error_msg)
-            return ""
-    
-    def print_header(self):
-        """Print welcome header"""
-        os.system('clear' if os.name != 'nt' else 'cls')
-        print(BEE_ART)
-        print(f"{BOLD}Welcome to Bee - Your Local AI Assistant{RESET}")
-        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
-        
-        # Connection status
-        if self.check_ollama_connection():
-            print(f"{GREEN}● Ollama接続済み{RESET}")
-            models = self.list_models()
-            if models:
-                print(f"{GRAY}利用可能なモデル: {', '.join(models)}{RESET}")
-                if self.model not in models and models:
-                    self.model = models[0]
-            print(f"{BLUE}現在のモデル: {self.model}{RESET}")
+    def check_server_status(self):
+        """Check detailed server status"""
+        if self.check_ollama():
+            print(f"{GREEN}● Ollama server is running{RESET}")
+            # Get version
+            result = subprocess.run(['ollama', '--version'], 
+                                  capture_output=True, text=True)
+            if result.returncode == 0:
+                print(f"  Version: {result.stdout.strip()}")
         else:
-            print(f"{YELLOW}⚠ Ollamaが起動していません{RESET}")
-            print(f"{GRAY}起動方法: ollama serve{RESET}")
-        
-        print(f"\n{GRAY}コマンド:{RESET}")
-        print(f"  {YELLOW}/model <name>{RESET} - モデルを切り替え")
-        print(f"  {YELLOW}/clear{RESET}        - 画面をクリア")
-        print(f"  {YELLOW}/history{RESET}      - 会話履歴を表示")
-        print(f"  {YELLOW}/save{RESET}         - 会話を保存")
-        print(f"  {YELLOW}/help{RESET}         - ヘルプを表示")
-        print(f"  {YELLOW}/exit{RESET}         - 終了")
-        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
+            print(f"{RED}● Ollama server is not running{RESET}")
     
-    def save_conversation(self):
-        """Save conversation to file"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"bee_chat_{timestamp}.json"
+    def run(self, args):
+        """Main entry point"""
+        if not args or args[0] in ['-h', '--help']:
+            self.help()
+            return
         
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump({
-                'timestamp': timestamp,
-                'model': self.model,
-                'conversation': self.conversation_history
-            }, f, ensure_ascii=False, indent=2)
+        if args[0] in ['-v', '--version']:
+            print("Bee CLI 2.0.0 - Part of Wisbee")
+            return
         
-        print(f"{GREEN}✓ 会話を保存しました: {filename}{RESET}\n")
-    
-    def show_history(self):
-        """Show conversation history"""
-        print(f"\n{BOLD}会話履歴:{RESET}")
-        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}")
+        command = args[0].lower()
+        cmd_args = args[1:] if len(args) > 1 else []
         
-        for entry in self.conversation_history:
-            timestamp = entry['timestamp']
-            role = entry['role']
-            content = entry['content']
-            
-            if role == 'user':
-                print(f"\n{GRAY}[{timestamp}]{RESET} {BOLD}You:{RESET}")
-                print(f"  {content}")
-            else:
-                print(f"\n{GRAY}[{timestamp}]{RESET} {ORANGE}🐝 Wisbee:{RESET}")
-                print(f"  {content}")
-        
-        print(f"\n{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
-    
-    def run(self):
-        """Main chat loop"""
-        self.print_header()
-        
-        while True:
+        if command in self.commands:
             try:
-                # Get user input with prompt
-                user_input = input(f"{BOLD}You:{RESET} ").strip()
-                
-                if not user_input:
-                    continue
-                
-                # Handle commands
-                if user_input.startswith('/'):
-                    command = user_input.lower().split()[0]
-                    
-                    if command == '/exit' or command == '/quit':
-                        print(f"\n{YELLOW}🐝 またね！{RESET}\n")
-                        break
-                    
-                    elif command == '/clear':
-                        self.print_header()
-                        continue
-                    
-                    elif command == '/model':
-                        parts = user_input.split(maxsplit=1)
-                        if len(parts) > 1:
-                            self.model = parts[1]
-                            print(f"{GREEN}✓ モデルを {self.model} に切り替えました{RESET}\n")
-                        else:
-                            models = self.list_models()
-                            print(f"{BLUE}利用可能なモデル:{RESET}")
-                            for model in models:
-                                prefix = "● " if model == self.model else "  "
-                                print(f"{prefix}{model}")
-                            print()
-                        continue
-                    
-                    elif command == '/history':
-                        self.show_history()
-                        continue
-                    
-                    elif command == '/save':
-                        self.save_conversation()
-                        continue
-                    
-                    elif command == '/help':
-                        self.print_header()
-                        continue
-                    
-                    else:
-                        print(f"{GRAY}不明なコマンド: {command}{RESET}\n")
-                        continue
-                
-                # Add to history
-                timestamp = datetime.now().strftime("%H:%M:%S")
-                self.conversation_history.append({
-                    'timestamp': timestamp,
-                    'role': 'user',
-                    'content': user_input
-                })
-                
-                # Get response
-                if self.check_ollama_connection():
-                    response = self.stream_response(user_input)
-                    if response:
-                        self.conversation_history.append({
-                            'timestamp': datetime.now().strftime("%H:%M:%S"),
-                            'role': 'assistant',
-                            'content': response
-                        })
-                else:
-                    print(f"\n{YELLOW}⚠ Ollamaに接続できません{RESET}")
-                    print(f"{GRAY}ヒント: 'ollama serve' でOllamaを起動してください{RESET}\n")
-                
+                self.commands[command](cmd_args)
             except KeyboardInterrupt:
-                print(f"\n\n{YELLOW}🐝 またね！{RESET}\n")
-                break
-            except EOFError:
-                print(f"\n\n{YELLOW}🐝 またね！{RESET}\n")
-                break
+                print(f"\n{YELLOW}Interrupted{RESET}")
             except Exception as e:
-                print(f"\n{GRAY}エラー: {str(e)}{RESET}\n")
+                print(f"{RED}Error: {str(e)}{RESET}")
+        else:
+            print(f"{RED}Unknown command: {command}{RESET}")
+            print(f"Use 'bee help' for available commands")
 
 def main():
-    """Main entry point"""
-    # Parse arguments
-    if len(sys.argv) > 1:
-        if sys.argv[1] in ['-h', '--help']:
-            print(BEE_ART)
-            print(f"{BOLD}Bee - Wisbee Command Line Chat{RESET}")
-            print("\nUsage: bee [options]")
-            print("\nOptions:")
-            print("  -h, --help     Show this help message")
-            print("  -v, --version  Show version")
-            print("\nCommands in chat:")
-            print("  /model <name>  Switch model")
-            print("  /clear         Clear screen")
-            print("  /history       Show conversation history")
-            print("  /save          Save conversation")
-            print("  /help          Show help")
-            print("  /exit          Exit")
-            return
-        
-        elif sys.argv[1] in ['-v', '--version']:
-            print("Bee 1.0.0 - Part of Wisbee")
-            return
+    cli = BeeCLI()
     
-    # Start chat
-    chat = BeeChat()
-    chat.run()
+    # If no arguments, default to chat
+    if len(sys.argv) == 1:
+        cli.chat([])
+    else:
+        cli.run(sys.argv[1:])
 
 if __name__ == "__main__":
     main()

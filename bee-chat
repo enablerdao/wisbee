@@ -1,0 +1,284 @@
+#!/usr/bin/env python3
+"""
+🐝 Bee - Command Line Chat Interface for Wisbee
+A beautiful CLI chat tool with Ollama integration
+"""
+
+import os
+import sys
+import json
+import time
+import requests
+import readline
+from datetime import datetime
+from typing import List, Dict, Optional
+
+# Color codes
+YELLOW = '\033[93m'
+ORANGE = '\033[38;5;208m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+GRAY = '\033[90m'
+RESET = '\033[0m'
+BOLD = '\033[1m'
+ITALIC = '\033[3m'
+
+# Bee ASCII art
+BEE_ART = f"""{YELLOW}
+     __         __
+    /  \\  🐝  /  \\
+    \\__/ Wisbee \\__/
+{RESET}"""
+
+class BeeChat:
+    def __init__(self):
+        self.ollama_url = "http://localhost:11434"
+        self.model = "llama3.2:latest"
+        self.conversation_history = []
+        self.setup_readline()
+        
+    def setup_readline(self):
+        """Setup readline for better input handling"""
+        readline.parse_and_bind("tab: complete")
+        readline.parse_and_bind("set editing-mode vi")
+        
+        # History file
+        history_file = os.path.expanduser("~/.bee_history")
+        try:
+            readline.read_history_file(history_file)
+        except FileNotFoundError:
+            pass
+            
+        # Save history on exit
+        import atexit
+        atexit.register(readline.write_history_file, history_file)
+    
+    def check_ollama_connection(self) -> bool:
+        """Check if Ollama is running"""
+        try:
+            response = requests.get(f"{self.ollama_url}/api/tags", timeout=2)
+            return response.status_code == 200
+        except:
+            return False
+    
+    def list_models(self) -> List[str]:
+        """List available Ollama models"""
+        try:
+            response = requests.get(f"{self.ollama_url}/api/tags")
+            data = response.json()
+            return [model['name'] for model in data.get('models', [])]
+        except:
+            return []
+    
+    def stream_response(self, prompt: str) -> str:
+        """Stream response from Ollama"""
+        payload = {
+            "model": self.model,
+            "prompt": prompt,
+            "stream": True
+        }
+        
+        full_response = ""
+        try:
+            response = requests.post(
+                f"{self.ollama_url}/api/generate",
+                json=payload,
+                stream=True
+            )
+            
+            print(f"\n{ORANGE}🐝 Wisbee:{RESET} ", end="", flush=True)
+            
+            for line in response.iter_lines():
+                if line:
+                    data = json.loads(line)
+                    chunk = data.get('response', '')
+                    print(chunk, end="", flush=True)
+                    full_response += chunk
+                    
+                    if data.get('done', False):
+                        break
+            
+            print("\n")
+            return full_response
+            
+        except Exception as e:
+            error_msg = f"\n{GRAY}エラー: {str(e)}{RESET}\n"
+            print(error_msg)
+            return ""
+    
+    def print_header(self):
+        """Print welcome header"""
+        os.system('clear' if os.name != 'nt' else 'cls')
+        print(BEE_ART)
+        print(f"{BOLD}Welcome to Bee - Your Local AI Assistant{RESET}")
+        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
+        
+        # Connection status
+        if self.check_ollama_connection():
+            print(f"{GREEN}● Ollama接続済み{RESET}")
+            models = self.list_models()
+            if models:
+                print(f"{GRAY}利用可能なモデル: {', '.join(models)}{RESET}")
+                if self.model not in models and models:
+                    self.model = models[0]
+            print(f"{BLUE}現在のモデル: {self.model}{RESET}")
+        else:
+            print(f"{YELLOW}⚠ Ollamaが起動していません{RESET}")
+            print(f"{GRAY}起動方法: ollama serve{RESET}")
+        
+        print(f"\n{GRAY}コマンド:{RESET}")
+        print(f"  {YELLOW}/model <name>{RESET} - モデルを切り替え")
+        print(f"  {YELLOW}/clear{RESET}        - 画面をクリア")
+        print(f"  {YELLOW}/history{RESET}      - 会話履歴を表示")
+        print(f"  {YELLOW}/save{RESET}         - 会話を保存")
+        print(f"  {YELLOW}/help{RESET}         - ヘルプを表示")
+        print(f"  {YELLOW}/exit{RESET}         - 終了")
+        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
+    
+    def save_conversation(self):
+        """Save conversation to file"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"bee_chat_{timestamp}.json"
+        
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump({
+                'timestamp': timestamp,
+                'model': self.model,
+                'conversation': self.conversation_history
+            }, f, ensure_ascii=False, indent=2)
+        
+        print(f"{GREEN}✓ 会話を保存しました: {filename}{RESET}\n")
+    
+    def show_history(self):
+        """Show conversation history"""
+        print(f"\n{BOLD}会話履歴:{RESET}")
+        print(f"{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}")
+        
+        for entry in self.conversation_history:
+            timestamp = entry['timestamp']
+            role = entry['role']
+            content = entry['content']
+            
+            if role == 'user':
+                print(f"\n{GRAY}[{timestamp}]{RESET} {BOLD}You:{RESET}")
+                print(f"  {content}")
+            else:
+                print(f"\n{GRAY}[{timestamp}]{RESET} {ORANGE}🐝 Wisbee:{RESET}")
+                print(f"  {content}")
+        
+        print(f"\n{GRAY}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{RESET}\n")
+    
+    def run(self):
+        """Main chat loop"""
+        self.print_header()
+        
+        while True:
+            try:
+                # Get user input with prompt
+                user_input = input(f"{BOLD}You:{RESET} ").strip()
+                
+                if not user_input:
+                    continue
+                
+                # Handle commands
+                if user_input.startswith('/'):
+                    command = user_input.lower().split()[0]
+                    
+                    if command == '/exit' or command == '/quit':
+                        print(f"\n{YELLOW}🐝 またね！{RESET}\n")
+                        break
+                    
+                    elif command == '/clear':
+                        self.print_header()
+                        continue
+                    
+                    elif command == '/model':
+                        parts = user_input.split(maxsplit=1)
+                        if len(parts) > 1:
+                            self.model = parts[1]
+                            print(f"{GREEN}✓ モデルを {self.model} に切り替えました{RESET}\n")
+                        else:
+                            models = self.list_models()
+                            print(f"{BLUE}利用可能なモデル:{RESET}")
+                            for model in models:
+                                prefix = "● " if model == self.model else "  "
+                                print(f"{prefix}{model}")
+                            print()
+                        continue
+                    
+                    elif command == '/history':
+                        self.show_history()
+                        continue
+                    
+                    elif command == '/save':
+                        self.save_conversation()
+                        continue
+                    
+                    elif command == '/help':
+                        self.print_header()
+                        continue
+                    
+                    else:
+                        print(f"{GRAY}不明なコマンド: {command}{RESET}\n")
+                        continue
+                
+                # Add to history
+                timestamp = datetime.now().strftime("%H:%M:%S")
+                self.conversation_history.append({
+                    'timestamp': timestamp,
+                    'role': 'user',
+                    'content': user_input
+                })
+                
+                # Get response
+                if self.check_ollama_connection():
+                    response = self.stream_response(user_input)
+                    if response:
+                        self.conversation_history.append({
+                            'timestamp': datetime.now().strftime("%H:%M:%S"),
+                            'role': 'assistant',
+                            'content': response
+                        })
+                else:
+                    print(f"\n{YELLOW}⚠ Ollamaに接続できません{RESET}")
+                    print(f"{GRAY}ヒント: 'ollama serve' でOllamaを起動してください{RESET}\n")
+                
+            except KeyboardInterrupt:
+                print(f"\n\n{YELLOW}🐝 またね！{RESET}\n")
+                break
+            except EOFError:
+                print(f"\n\n{YELLOW}🐝 またね！{RESET}\n")
+                break
+            except Exception as e:
+                print(f"\n{GRAY}エラー: {str(e)}{RESET}\n")
+
+def main():
+    """Main entry point"""
+    # Parse arguments
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ['-h', '--help']:
+            print(BEE_ART)
+            print(f"{BOLD}Bee - Wisbee Command Line Chat{RESET}")
+            print("\nUsage: bee [options]")
+            print("\nOptions:")
+            print("  -h, --help     Show this help message")
+            print("  -v, --version  Show version")
+            print("\nCommands in chat:")
+            print("  /model <name>  Switch model")
+            print("  /clear         Clear screen")
+            print("  /history       Show conversation history")
+            print("  /save          Save conversation")
+            print("  /help          Show help")
+            print("  /exit          Exit")
+            return
+        
+        elif sys.argv[1] in ['-v', '--version']:
+            print("Bee 1.0.0 - Part of Wisbee")
+            return
+    
+    # Start chat
+    chat = BeeChat()
+    chat.run()
+
+if __name__ == "__main__":
+    main()

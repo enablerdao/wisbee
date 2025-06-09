@@ -73,30 +73,33 @@ fi
 
 echo "📍 Installing to: $INSTALL_DIR"
 
-# Download bee script if not present
+
+# Install bee commands
+echo "📦 Installing bee commands..."
+
+# Download bee and bee-chat if not present
 if [ ! -f "bee" ]; then
-    echo "📥 Downloading bee script..."
-    if command_exists curl; then
-        curl -fsSL https://raw.githubusercontent.com/enablerdao/wisbee/main/bee -o bee || {
-            echo -e "${RED}❌ Error: Failed to download bee script${NC}"
-            exit 1
-        }
-    elif command_exists wget; then
-        wget -q https://raw.githubusercontent.com/enablerdao/wisbee/main/bee -O bee || {
-            echo -e "${RED}❌ Error: Failed to download bee script${NC}"
-            exit 1
-        }
-    else
-        echo -e "${RED}❌ Error: Neither curl nor wget found. Cannot download bee script.${NC}"
-        echo "Please install curl or wget, or download bee manually."
+    echo "📥 Downloading bee..."
+    curl -fsSL https://raw.githubusercontent.com/enablerdao/wisbee/main/bee -o bee || \
+    wget -q https://raw.githubusercontent.com/enablerdao/wisbee/main/bee -O bee || {
+        echo -e "${RED}❌ Error: Failed to download bee${NC}"
         exit 1
-    fi
+    }
 fi
 
-# Install bee command
-echo "📦 Installing bee command..."
+if [ ! -f "bee-chat" ]; then
+    echo "📥 Downloading bee-chat..."
+    curl -fsSL https://raw.githubusercontent.com/enablerdao/wisbee/main/bee-chat -o bee-chat || \
+    wget -q https://raw.githubusercontent.com/enablerdao/wisbee/main/bee-chat -O bee-chat || {
+        echo -e "${RED}❌ Error: Failed to download bee-chat${NC}"
+        exit 1
+    }
+fi
+
+# Install both scripts
 cp bee "$INSTALL_DIR/bee"
-chmod +x "$INSTALL_DIR/bee"
+cp bee-chat "$INSTALL_DIR/bee-chat"
+chmod +x "$INSTALL_DIR/bee" "$INSTALL_DIR/bee-chat"
 
 # Create wisbee alias
 echo "🔗 Creating wisbee alias..."
